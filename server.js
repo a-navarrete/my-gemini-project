@@ -1,6 +1,7 @@
-const express = require('express');
-const cors = require('cors');
-const searchRouter = require('./api/routes/search');
+import express from 'express';
+import cors from 'cors';
+import searchRouter from './api/routes/search.js';
+import bookingRouter from './api/routes/booking.js';
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -13,6 +14,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/search', searchRouter);
+app.use('/api/book', bookingRouter);
 
 // Basic error handling middleware
 app.use((err, req, res, next) => {

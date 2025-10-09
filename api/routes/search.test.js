@@ -6,9 +6,32 @@ import flightApi from '../services/flightApi.js';
 import hotelApi from '../services/hotelApi.js';
 
 // Mock the services
-jest.mock('../services/nlpService.js');
-jest.mock('../services/flightApi.js');
-jest.mock('../services/hotelApi.js');
+jest.mock('../services/nlpService.js', () => {
+  const parseQuery = jest.fn();
+  return {
+    __esModule: true,
+    default: { parseQuery },
+    parseQuery,
+  };
+});
+
+jest.mock('../services/flightApi.js', () => {
+  const getFlights = jest.fn();
+  return {
+    __esModule: true,
+    default: { getFlights },
+    getFlights,
+  };
+});
+
+jest.mock('../services/hotelApi.js', () => {
+  const getHotels = jest.fn();
+  return {
+    __esModule: true,
+    default: { getHotels },
+    getHotels,
+  };
+});
 
 const app = express();
 app.use(express.json());

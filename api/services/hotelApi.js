@@ -8,8 +8,13 @@ const hotels = {
   ],
 };
 
-function getHotels(destination) {
-  return hotels[destination.toLowerCase()] || [];
+export function getHotels(destination) {
+  if (typeof destination !== 'string') {
+    return [];
+  }
+
+  const normalizedDestination = destination.trim().toLowerCase();
+  return hotels[normalizedDestination] || [];
 }
 
-module.exports = { getHotels };
+export default { getHotels };

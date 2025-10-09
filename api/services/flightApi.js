@@ -8,8 +8,13 @@ const flights = {
   ],
 };
 
-function getFlights(destination) {
-  return flights[destination.toLowerCase()] || [];
+export function getFlights(destination) {
+  if (typeof destination !== 'string') {
+    return [];
+  }
+
+  const normalizedDestination = destination.trim().toLowerCase();
+  return flights[normalizedDestination] || [];
 }
 
-module.exports = { getFlights };
+export default { getFlights };

@@ -4,7 +4,11 @@ import bookingRouter from './booking.js';
 import { readDb, writeDb } from '../db.js';
 
 // Mock the db service
-jest.mock('../db.js');
+jest.mock('../db.js', () => ({
+  __esModule: true,
+  readDb: jest.fn(),
+  writeDb: jest.fn(),
+}));
 
 const app = express();
 app.use(express.json());
@@ -53,19 +57,19 @@ describe('POST /api/book', () => {
       .send(bookingDetails);
 
     expect(response.statusCode).toBe(400);
-    expect(response.body.error).toBe('Missing booking information');
+    expect(response.body.error).toBe('Payment details are required.');
     expect(readDb).not.toHaveBeenCalled();
     expect(writeDb).not.toHaveBeenCalled();
   });
 
-  test('should handle existing bookings in db', async () => {
+  test('should handle existing bookings in db and preserve other data', async () => {
     const existingBooking = {
       flight: { id: 'F0' },
       hotel: { id: 'H0' },
       user: { name: 'Jane Doe' },
       payment: { token: 'tok_mastercard' },
     };
-    readDb.mockResolvedValue({ bookings: [existingBooking] });
+    readDb.mockResolvedValue({ bookings: [existingBooking], lastUpdated: 'yesterday' });
     writeDb.mockResolvedValue(undefined);
 
     const newBookingDetails = {
@@ -84,6 +88,9 @@ describe('POST /api/book', () => {
     expect(response.body.message).toBe('Booking successful');
     expect(readDb).toHaveBeenCalledTimes(1);
     expect(writeDb).toHaveBeenCalledTimes(1);
-    expect(writeDb).toHaveBeenCalledWith({ bookings: [existingBooking, newBookingDetails] });
+    expect(writeDb).toHaveBeenCalledWith({
+      bookings: [existingBooking, newBookingDetails],
+      lastUpdated: 'yesterday',
+    });
   });
 });

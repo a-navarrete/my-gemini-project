@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const nlpService = require('../services/nlpService');
-const flightApi = require('../services/flightApi');
-const hotelApi = require('../services/hotelApi');
+import nlpService from '../services/nlpService.js';
+import flightApi from '../services/flightApi.js';
+import hotelApi from '../services/hotelApi.js';
 
 router.post('/', (req, res) => {
   const { query } = req.body;
@@ -22,4 +22,4 @@ router.post('/', (req, res) => {
   res.json({ flights, hotels });
 });
 
-module.exports = router;
+export default router;

@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "jest --detectOpenHandles"
+    "test": "jest --detectOpenHandles",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,7 +14,8 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "inquirer": "^12.9.6"
+    "inquirer": "^12.9.6",
+    "winston": "^3.18.3"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.3",

@@ -12,4 +12,4 @@ function getFlights(destination) {
   return flights[destination.toLowerCase()] || [];
 }
 
-module.exports = { getFlights };
+export default { getFlights };

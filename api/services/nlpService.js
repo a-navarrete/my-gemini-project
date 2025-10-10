@@ -4,4 +4,4 @@ function parseQuery(query) {
   return { destination };
 }
 
-module.exports = { parseQuery };
+export default { parseQuery };

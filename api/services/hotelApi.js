@@ -12,4 +12,4 @@ function getHotels(destination) {
   return hotels[destination.toLowerCase()] || [];
 }
 
-module.exports = { getHotels };
+export default { getHotels };

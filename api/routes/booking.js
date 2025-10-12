@@ -1,18 +1,22 @@
 import express from 'express';
+import bookingOrchestratorAgent from '../agents/bookingOrchestratorAgent.js';
+
 const router = express.Router();
-import { readDb, writeDb } from '../db.js';
 
 router.post('/', async (req, res) => {
-  const { flight, hotel, user, payment } = req.body;
-  if (!flight || !hotel || !user || !payment) {
-    return res.status(400).json({ error: 'Missing booking information' });
+  const bookingDetails = req.body;
+
+  try {
+    const result = await bookingOrchestratorAgent.book(bookingDetails);
+    if (result.success) {
+      res.json(result);
+    } else {
+      res.status(400).json({ error: result.error });
+    }
+  } catch (error) {
+    console.error('Booking request failed', error);
+    res.status(500).json({ error: 'Unable to process booking request' });
   }
-
-  const db = await readDb();
-  db.bookings.push(req.body);
-  await writeDb(db);
-
-  res.json({ success: true, message: 'Booking successful' });
 });
 
 export default router;

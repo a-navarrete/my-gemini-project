@@ -1,25 +1,25 @@
 import express from 'express';
-const router = express.Router();
-import nlpService from '../services/nlpService.js';
-import flightApi from '../services/flightApi.js';
-import hotelApi from '../services/hotelApi.js';
+import bookingOrchestratorAgent from '../agents/bookingOrchestratorAgent.js';
 
-router.post('/', (req, res) => {
+const router = express.Router();
+
+router.post('/', async (req, res) => {
   const { query } = req.body;
   if (!query) {
     return res.status(400).json({ error: 'Query is required' });
   }
 
-  const { destination } = nlpService.parseQuery(query);
-
-  if (!destination) {
-    return res.json({ flights: [], hotels: [] });
+  try {
+    const result = await bookingOrchestratorAgent.search(query);
+    if (result.success) {
+      res.json(result);
+    } else {
+      res.status(400).json({ error: result.message });
+    }
+  } catch (error) {
+    console.error('Search request failed', error);
+    res.status(500).json({ error: 'Unable to process search request' });
   }
-
-  const flights = flightApi.getFlights(destination);
-  const hotels = hotelApi.getHotels(destination);
-
-  res.json({ flights, hotels });
 });
 
 export default router;

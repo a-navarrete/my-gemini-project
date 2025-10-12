@@ -5,21 +5,23 @@ import hotelApi from '../services/hotelApi.js';
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { query } = req.body;
   if (!query) {
     return res.status(400).json({ error: 'Query is required' });
   }
 
   try {
-    const { destination } = nlpService.parseQuery(query);
+    const { destination } = await nlpService.parseQuery(query);
 
     if (!destination) {
       return res.json({ flights: [], hotels: [] });
     }
 
-    const flights = flightApi.getFlights(destination);
-    const hotels = hotelApi.getHotels(destination);
+    const [flights = [], hotels = []] = await Promise.all([
+      flightApi.getFlights(destination),
+      hotelApi.getHotels(destination),
+    ]);
 
     return res.json({ flights, hotels });
   } catch (error) {

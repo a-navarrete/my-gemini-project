@@ -9,15 +9,15 @@ const bookingOrchestratorAgent = {
   goal: 'Manage the entire booking process from query to confirmation.',
 
   search: async (query) => {
-    const { destination } = nlpAgent.execute(query);
-    if (!destination) {
-      return { success: false, message: 'Could not determine destination from query.' };
+    const { destination, destinationCode } = nlpAgent.execute(query);
+    if (!destination || !destinationCode) {
+      return { success: false, message: 'Could not determine a supported destination from query.' };
     }
 
-    const flights = flightAgent.execute(destination);
+    const flights = await flightAgent.execute(destinationCode);
     const hotels = hotelAgent.execute(destination);
 
-    return { success: true, flights, hotels };
+    return { success: true, destination, destinationCode, flights, hotels };
   },
 
   book: async (bookingDetails) => {

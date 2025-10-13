@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { getIataCode } from '../utils/destinationMapper.js'; // New import
 
 /**
  * @typedef {Object} Flight
@@ -51,18 +50,31 @@ const normalizeAmadeusResponse = (data) => {
   });
 };
 
+const resolveDestinationCode = (value) => {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  if (/^[A-Z]{3}$/i.test(trimmed)) {
+    return trimmed.toUpperCase();
+  }
+
+  return null;
+};
+
 /** @type {FlightAgent} */
 const flightAgent = {
   role: 'Flight Options Specialist',
   goal: 'Find available flights based on given parameters.',
   execute: async (destination) => {
-    if (typeof destination !== 'string') {
-      return [];
-    }
-
-    const iataCode = getIataCode(destination);
-    if (!iataCode) {
-      console.warn(`No IATA code found for destination: ${destination}`);
+    const destinationCode = resolveDestinationCode(destination);
+    if (!destinationCode) {
+      console.warn(`No valid IATA code provided for destination: ${destination}`);
       return [];
     }
 
@@ -78,7 +90,7 @@ const flightAgent = {
           },
           params: {
             originLocationCode: 'NYC',
-            destinationLocationCode: iataCode,
+            destinationLocationCode: destinationCode,
             departureDate: today,
             adults: 1,
           },
@@ -87,7 +99,12 @@ const flightAgent = {
 
       return normalizeAmadeusResponse(response.data.data);
     } catch (error) {
-      console.error('Amadeus API request failed', error);
+      const status = error.response?.status;
+      const statusText = error.response?.statusText;
+      console.error(
+        'Amadeus API request failed',
+        status ? `${status} ${statusText || ''}`.trim() : error.message
+      );
       return [];
     }
   }

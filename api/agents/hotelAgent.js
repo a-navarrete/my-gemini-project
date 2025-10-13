@@ -1,3 +1,7 @@
+import axios from 'axios';
+import crypto from 'crypto';
+import { getHotelbedsCode } from '../utils/destinationMapper.js'; // New import
+
 /**
  * @typedef {Object} Hotel
  * @property {number} id
@@ -10,30 +14,76 @@
  * @typedef {Object} HotelAgent
  * @property {string} role - The role of the agent.
  * @property {string} goal - The goal of the agent.
- * @property {(destination: string) => Hotel[]} execute - The function to execute the agent's task.
+ * @property {(destination: string) => Promise<Hotel[]>} execute - The function to execute the agent's task.
  */
 
-const hotels = {
-  london: [
-    { id: 1, name: 'The Savoy', location: 'London', pricePerNight: 400 },
-    { id: 2, name: 'The Ritz', location: 'London', pricePerNight: 450 },
-  ],
-  paris: [
-    { id: 3, name: 'Le Bristol', location: 'Paris', pricePerNight: 800 },
-  ],
+const generateXSignature = (apiKey, apiSecret) => {
+  const timestamp = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
+  const signature = crypto.createHash('sha256').update(apiKey + apiSecret + timestamp).digest('hex');
+  return signature;
+};
+
+const normalizeHotelbedsResponse = (data) => {
+  return data.map((hotel, index) => ({
+    id: hotel.code || index,
+    name: hotel.name,
+    location: hotel.destinationName,
+    pricePerNight: parseFloat(hotel.minRate),
+  }));
 };
 
 /** @type {HotelAgent} */
 const hotelAgent = {
   role: 'Accommodation Specialist',
   goal: 'Find available hotels based on given parameters.',
-  execute: (destination) => {
+  execute: async (destination) => {
     if (typeof destination !== 'string') {
       return [];
     }
 
-    const normalizedDestination = destination.trim().toLowerCase();
-    return hotels[normalizedDestination] || [];
+    const hotelbedsCode = getHotelbedsCode(destination);
+    if (!hotelbedsCode) {
+      console.warn(`No Hotelbeds code found for destination: ${destination}`);
+      return [];
+    }
+
+    try {
+      const { HOTELBEDS_API_KEY, HOTELBEDS_API_SECRET } = process.env;
+      if (!HOTELBEDS_API_KEY || !HOTELBEDS_API_SECRET) {
+        throw new Error('Hotelbeds API key or secret not provided.');
+      }
+
+      const xSignature = generateXSignature(HOTELBEDS_API_KEY, HOTELBEDS_API_SECRET);
+
+      const response = await axios.post(
+        'https://api.test.hotelbeds.com/hotel-api/1.0/hotels',
+        {
+          stay: {
+            checkIn: new Date().toISOString().split('T')[0],
+            checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+            adults: 1,
+            children: 0,
+          },
+          occupancies: [{ rooms: 1, adults: 1, children: 0 }],
+          destination: {
+            code: hotelbedsCode,
+          },
+        },
+        {
+          headers: {
+            'Api-Key': HOTELBEDS_API_KEY,
+            'X-Signature': xSignature,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        }
+      );
+
+      return normalizeHotelbedsResponse(response.data.hotels.hotels);
+    } catch (error) {
+      console.error('Hotelbeds API request failed', error);
+      return [];
+    }
   }
 };
 

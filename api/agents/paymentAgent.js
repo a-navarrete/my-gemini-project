@@ -11,7 +11,9 @@ const paymentAgent = {
   goal: 'To process a payment and return a transaction ID.',
   execute: async (paymentDetails) => {
     // In a real application, this would interact with a payment gateway like Stripe.
-    console.log('Processing payment with details:', paymentDetails);
+    if (!paymentDetails || typeof paymentDetails !== 'object') {
+      return { success: false, error: 'Invalid payment payload' };
+    }
 
     // Simulate a successful payment
     const transactionId = `txn_${Date.now()}`;

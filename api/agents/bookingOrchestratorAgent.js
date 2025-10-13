@@ -31,9 +31,11 @@ const bookingOrchestratorAgent = {
     }
 
     // 2. Persist booking
+    const { payment: _payment, ...rest } = bookingDetails;
     const bookingResult = await bookingAgent.execute({
-      ...bookingDetails,
+      ...rest,
       transactionId: paymentResult.transactionId,
+      payment: { transactionId: paymentResult.transactionId },
     });
 
     return bookingResult;

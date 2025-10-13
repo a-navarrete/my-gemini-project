@@ -44,9 +44,19 @@ const bookingAgent = {
     }
 
     try {
+      const { payment, ...rest } = bookingDetails;
+      const { transactionId, ...detailsWithoutTransaction } = rest;
+
+      const bookingRecord = {
+        ...detailsWithoutTransaction,
+        payment: {
+          transactionId: transactionId || payment?.transactionId || null,
+        },
+      };
+
       const database = await readDb();
       const bookings = Array.isArray(database.bookings) ? database.bookings : [];
-      const updatedBookings = [...bookings, bookingDetails];
+      const updatedBookings = [...bookings, bookingRecord];
       const updatedDatabase = { ...database, bookings: updatedBookings };
 
       await writeDb(updatedDatabase);

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getIataCode } from '../utils/destinationMapper.js'; // New import
 
 /**
  * @typedef {Object} Flight
@@ -59,6 +60,12 @@ const flightAgent = {
       return [];
     }
 
+    const iataCode = getIataCode(destination);
+    if (!iataCode) {
+      console.warn(`No IATA code found for destination: ${destination}`);
+      return [];
+    }
+
     try {
       const token = await getAmadeusToken();
       const today = new Date().toISOString().split('T')[0];
@@ -70,8 +77,8 @@ const flightAgent = {
             Authorization: `Bearer ${token}`,
           },
           params: {
-            originLocationCode: 'NYC', // Using a default origin for now
-            destinationLocationCode: destination,
+            originLocationCode: 'NYC',
+            destinationLocationCode: iataCode,
             departureDate: today,
             adults: 1,
           },
@@ -81,7 +88,7 @@ const flightAgent = {
       return normalizeAmadeusResponse(response.data.data);
     } catch (error) {
       console.error('Amadeus API request failed', error);
-      return []; // Return empty array on error
+      return [];
     }
   }
 };

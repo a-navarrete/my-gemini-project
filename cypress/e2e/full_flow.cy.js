@@ -7,7 +7,6 @@ describe('Full user flow', () => {
     // Type a search query and submit
     cy.get('input[type="text"]').type('flights to london');
     cy.get('form').submit();
-    cy.wait(1000); // Add wait after search submission
     cy.log('Submitted the search form');
 
     // Assert that results are displayed
@@ -18,11 +17,7 @@ describe('Full user flow', () => {
     // Select a flight and a hotel
     cy.get('[data-cy=select-flight-button]').first().click();
     cy.get('[data-cy=select-hotel-button]').first().click();
-    cy.wait(1000); // Add wait after selecting flight and hotel
     cy.log('Selected a flight and a hotel');
-
-    // Add another wait here to allow TripSummary to re-render
-    cy.wait(1000);
 
     // Log the content of the trip summary before assertion
     cy.get('.trip-summary').then(($summary) => {

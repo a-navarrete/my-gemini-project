@@ -4,7 +4,7 @@ export default defineConfig({
   projectId: '33c4ds',
   e2e: {
     baseUrl: 'http://localhost:3000',
-    setupNodeEvents(on, config) {
+    setupNodeEvents() {
       // implement node event listeners here
     },
   },

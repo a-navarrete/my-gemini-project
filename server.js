@@ -48,7 +48,7 @@ app.use('/api/search', searchRouter);
 app.use('/api/book', bookingRouter);
 
 // Basic error handling middleware
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   if (err.message === 'Not allowed by CORS') {
     logger.warn(`Blocked CORS request from origin: ${req.headers.origin || 'unknown'}`);
     return res.status(403).json({ error: 'Origin not allowed' });

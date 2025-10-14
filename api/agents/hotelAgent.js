@@ -61,13 +61,19 @@ const hotelAgent = {
           stay: {
             checkIn: new Date().toISOString().split('T')[0],
             checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+          },
+          occupancies: [{
+            rooms: 1,
             adults: 1,
-            children: 0,
+            children: 0
+          }],
+          hotels: {
+            destination: {
+              code: hotelbedsCode,
+            },
           },
-          occupancies: [{ rooms: 1, adults: 1, children: 0 }],
-          destination: {
-            code: hotelbedsCode,
-          },
+          language: "ENG",
+          currency: "USD"
         },
         {
           headers: {

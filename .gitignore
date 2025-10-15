@@ -3,5 +3,6 @@
 .env
 .vercel/
 node_modules/
-
 gha-creds-*.json
+.DS_Store
+node_modules_failed_install*/

@@ -1,0 +1,157 @@
+{
+  "bookings": [
+    {
+      "flight": {
+        "id": 1,
+        "airline": "TestAir",
+        "price": 100
+      },
+      "hotel": {
+        "id": 1,
+        "name": "TestHotel",
+        "price": 50
+      },
+      "user": {
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "payment": {
+        "token": "test_token"
+      }
+    },
+    {
+      "flight": {
+        "id": 1,
+        "airline": "TestAir",
+        "price": 100
+      },
+      "hotel": {
+        "id": 1,
+        "name": "TestHotel",
+        "price": 50
+      },
+      "user": {
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "payment": {
+        "token": "test_token"
+      }
+    },
+    {
+      "flight": {
+        "id": 2,
+        "airline": "Virgin Atlantic",
+        "flightNumber": "VS4",
+        "from": "NYC",
+        "to": "LHR",
+        "price": 600
+      },
+      "hotel": {
+        "id": 2,
+        "name": "The Ritz",
+        "location": "London",
+        "pricePerNight": 450
+      },
+      "user": {
+        "name": "arturo",
+        "email": "hello@arturonavarrete.co"
+      },
+      "payment": {
+        "token": "mock_payment_token"
+      }
+    },
+    {
+      "flight": {
+        "id": 1,
+        "airline": "British Airways",
+        "flightNumber": "BA2490",
+        "from": "NYC",
+        "to": "LHR",
+        "price": 550
+      },
+      "hotel": {
+        "id": 1,
+        "name": "The Savoy",
+        "location": "London",
+        "pricePerNight": 400
+      },
+      "user": {
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "payment": {
+        "token": "mock_payment_token"
+      }
+    },
+    {
+      "flight": {
+        "id": 1,
+        "airline": "British Airways",
+        "flightNumber": "BA2490",
+        "from": "NYC",
+        "to": "LHR",
+        "price": 550
+      },
+      "hotel": {
+        "id": 1,
+        "name": "The Savoy",
+        "location": "London",
+        "pricePerNight": 400
+      },
+      "user": {
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "payment": {
+        "token": "mock_payment_token"
+      }
+    },
+    {
+      "flight": {
+        "id": 3,
+        "airline": "Air France",
+        "flightNumber": "AF007",
+        "from": "NYC",
+        "to": "CDG",
+        "price": 580
+      },
+      "hotel": {
+        "id": 3,
+        "name": "Le Bristol",
+        "location": "Paris",
+        "pricePerNight": 800
+      },
+      "user": {
+        "name": "Arturo Navarrette",
+        "email": "hello@arturonavarrete.co"
+      },
+      "payment": {
+        "token": "mock_payment_token"
+      }
+    },
+    {
+      "flight": {
+        "id": 3,
+        "airline": "Air France",
+        "flightNumber": "AF007",
+        "from": "NYC",
+        "to": "CDG",
+        "price": 580
+      },
+      "hotel": {
+        "id": 3,
+        "name": "Le Bristol",
+        "location": "Paris",
+        "pricePerNight": 800
+      },
+      "user": {
+        "name": "Arturo Navarrette",
+        "email": "hello@arturonavarrete.co"
+      },
+      "payment": {
+        "token": "mock_payment_token"
+      }
+    }
+  ]
+}

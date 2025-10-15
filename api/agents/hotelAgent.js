@@ -67,10 +67,8 @@ const hotelAgent = {
             adults: 1,
             children: 0
           }],
-          hotels: {
-            destination: {
-              code: hotelbedsCode,
-            },
+          destination: {
+            code: hotelbedsCode,
           },
           language: "ENG",
           currency: "USD"

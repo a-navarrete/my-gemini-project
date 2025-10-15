@@ -3,3 +3,5 @@
 .env
 .vercel/
 node_modules/
+
+gha-creds-*.json

@@ -9,7 +9,7 @@ import flightAgent from './api/agents/flightAgent.js';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 const allowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || 'http://localhost:3000')
   .split(',')
   .map((origin) => origin.trim())

@@ -108,7 +108,7 @@
 
 -   `api/crewai_agents/` - New directory for the Python CrewAI project.
 -   `api/crewai_agents/tools.py` - New: Python module to define custom CrewAI tools.
--   `api/crewai_agents/agents.py` - New: Python module to define CrewAI agents.
+-   `api/crew11ai_agents/agents.py` - New: Python module to define CrewAI agents.
 -   `api/crewai_agents/crew.py` - New: Python module to define the CrewAI orchestration workflow.
 -   `api/crewai_agents/main.py` - New: Entry point for the Python CrewAI application.
 -   `api/agents/nlpAgent.js` - Modified: Will be wrapped by a Python tool or its logic re-implemented.

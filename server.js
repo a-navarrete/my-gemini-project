@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import searchRouter from './api/routes/search.js';
 import bookingRouter from './api/routes/booking.js';
+import crewaiRouter from './api/routes/crewai.js';
 import logger from './config/logger.js';
 import flightAgent from './api/agents/flightAgent.js';
 
@@ -46,6 +47,7 @@ app.get('/test-amadeus', async (req, res) => {
 console.log('Registering search router...');
 app.use('/api/search', searchRouter);
 app.use('/api/book', bookingRouter);
+app.use('/api/crewai', crewaiRouter);
 
 // Basic error handling middleware
 app.use((err, req, res, _next) => {

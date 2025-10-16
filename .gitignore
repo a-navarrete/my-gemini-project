@@ -1,8 +1,37 @@
 
-.gemini/
-.env
-.vercel/
 node_modules/
-gha-creds-*.json
-.DS_Store
+# Dependency/Build Directories
+/node_modules
+/dist
+/build
 node_modules_failed_install*/
+
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+ gha-creds-*.json
+
+# OS-Generated Files (macOS)
+.DS_Store
+**/.DS_Store
+.Trashes
+*.iml
+.idea/
+
+# Editor/IDE Files
+.vscode/
+.vercel/
+.gemini/
+
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Git History/State
+.git/
+.gitignore

@@ -35,3 +35,11 @@ lerna-debug.log*
 # Git History/State
 .git/
 .gitignore
+
+api/__pycache__/
+api/crewai_agents/__pycache__/
+api/crewai_agents/tests/
+api/crewai_agents/venv_crewai/
+venv_crewai/
+venv_crewai_311/
+venv_crewai_ssl/

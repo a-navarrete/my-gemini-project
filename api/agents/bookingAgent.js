@@ -37,6 +37,7 @@ function validateBookingPayload(payload) {
 const bookingAgent = {
   role: 'Booking Specialist',
   goal: 'To persist a validated booking into the database.',
+  backstory: 'A meticulous and reliable AI assistant responsible for validating and persisting booking details to the database.',
   execute: async (bookingDetails) => {
     const validationError = validateBookingPayload(bookingDetails);
     if (validationError) {

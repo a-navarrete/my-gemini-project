@@ -7,6 +7,7 @@ import paymentAgent from './paymentAgent.js';
 const bookingOrchestratorAgent = {
   role: 'Booking Orchestrator',
   goal: 'Manage the entire booking process from query to confirmation.',
+  backstory: 'A master coordinator for travel planning, ensuring a seamless booking process from start to finish by managing all the specialized agents.',
 
   search: async (query) => {
     const { destination, destinationCode } = nlpAgent.execute(query);

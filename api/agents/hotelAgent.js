@@ -36,6 +36,7 @@ const normalizeHotelbedsResponse = (data) => {
 const hotelAgent = {
   role: 'Accommodation Specialist',
   goal: 'Find available hotels based on given parameters.',
+  backstory: 'A seasoned accommodation specialist with deep knowledge of hotel booking systems and finding the best deals.',
   execute: async (destination) => {
     if (typeof destination !== 'string') {
       return [];

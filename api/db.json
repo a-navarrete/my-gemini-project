@@ -152,6 +152,43 @@
       "payment": {
         "token": "mock_payment_token"
       }
+    },
+    {
+      "flight": {
+        "id": 1
+      },
+      "hotel": {
+        "id": 10
+      },
+      "user": {
+        "name": "Ada"
+      },
+      "payment": {
+        "transactionId": "txn_1760547758783"
+      }
+    },
+    {
+      "flight": {
+        "id": "1",
+        "airline": "TP",
+        "flightNumber": "TP 210",
+        "from": "JFK",
+        "to": "LIS",
+        "price": 178.52
+      },
+      "hotel": {
+        "id": 6557,
+        "name": "The Marble Arch Hotel, by Thistle",
+        "location": "London",
+        "pricePerNight": 317.12
+      },
+      "user": {
+        "name": "fafasdf",
+        "email": "hello@arturonavarrete.co"
+      },
+      "payment": {
+        "transactionId": "txn_1760560928821"
+      }
     }
   ]
 }

@@ -53,6 +53,7 @@ const STOP_WORD_REGEX = /\b(for|with|on|in|by|during|next|this|today|tomorrow|fr
 const nlpAgent = {
   role: 'Natural Language Query Analyst',
   goal: "Extract structured travel parameters from a user's query.",
+  backstory: 'An AI assistant specialized in understanding and processing human language for travel planning.',
   execute: (query = '') => {
     if (typeof query !== 'string') {
       return { destination: null, destinationCode: null };

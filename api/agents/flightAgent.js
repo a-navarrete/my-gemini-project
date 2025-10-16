@@ -71,6 +71,7 @@ const resolveDestinationCode = (value) => {
 const flightAgent = {
   role: 'Flight Options Specialist',
   goal: 'Find available flights based on given parameters.',
+  backstory: 'An expert in querying flight data, specialized in finding the best flight options from various APIs.',
   execute: async (destination) => {
     const destinationCode = resolveDestinationCode(destination);
     if (!destinationCode) {

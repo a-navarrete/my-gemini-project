@@ -9,6 +9,7 @@
 const paymentAgent = {
   role: 'Payment Processor',
   goal: 'To process a payment and return a transaction ID.',
+  backstory: 'A secure and reliable AI component for processing financial transactions.',
   execute: async (paymentDetails) => {
     // In a real application, this would interact with a payment gateway like Stripe.
     if (!paymentDetails || typeof paymentDetails !== 'object') {

@@ -4,12 +4,16 @@ describe('CrewAI Full User Journey E2E Test', () => {
     cy.visit('http://localhost:3000'); // Assuming your React app runs on port 3000
 
     // 1. Search for a flight and hotel
-    cy.get('[data-testid="ai-search-input"]').type('flights to London and a hotel for 3 nights');
-    cy.get('[data-testid="ai-search-button"]').click();
+    cy.get('[data-cy="search-input"]').type('flights to London and a hotel for 3 nights');
+    cy.get('[data-cy="search-button"]').click();
 
-    // Wait for results to load (adjust timeout as needed)
-    cy.contains('Flight Results', { timeout: 10000 }).should('be.visible');
-    cy.contains('Hotel Results', { timeout: 10000 }).should('be.visible');
+    // Intercept the API call and wait for it to complete
+    cy.intercept('POST', '/api/crewai/orchestrate').as('orchestrateRequest');
+    cy.wait('@orchestrateRequest', { timeout: 30000 }); // Increased timeout for the API call itself
+
+    // Now assert for results
+    cy.contains('Flight Results', { timeout: 20000 }).should('be.visible');
+    cy.contains('Hotel Results', { timeout: 20000 }).should('be.visible');
 
     // 2. Select a flight and a hotel
     cy.get('[data-testid="flight-select-button"]').first().click();

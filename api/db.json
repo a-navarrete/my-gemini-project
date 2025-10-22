@@ -189,6 +189,50 @@
       "payment": {
         "transactionId": "txn_1760560928821"
       }
+    },
+    {
+      "flight": {
+        "airline": "TP",
+        "flightNumber": "TP 210",
+        "from": "JFK",
+        "to": "LIS",
+        "price": 177.83
+      },
+      "hotel": {
+        "id": "6557",
+        "name": "The Marble Arch Hotel, by Thistle",
+        "location": "London",
+        "pricePerNight": 278.56
+      },
+      "user": {
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "payment": {
+        "transactionId": "txn_1761149995569"
+      }
+    },
+    {
+      "flight": {
+        "airline": "DemoAir",
+        "flightNumber": "DA 100",
+        "from": "NYC",
+        "to": "LON",
+        "price": 512.34
+      },
+      "hotel": {
+        "id": "MOCK-HOTEL-1",
+        "name": "Mock Grand London",
+        "location": "London City Center",
+        "pricePerNight": 189
+      },
+      "user": {
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "payment": {
+        "transactionId": "txn_1761151669295"
+      }
     }
   ]
 }

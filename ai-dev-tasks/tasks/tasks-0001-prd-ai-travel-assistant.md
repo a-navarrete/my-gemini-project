@@ -127,6 +127,7 @@
 -   `web/src/components/AiSearchBar.test.js` - Modified/New: Update tests for new backend integration.
 -   `web/src/components/ResultsView.test.js` - Modified/New: Update tests for new backend integration.
 -   `web/src/components/Checkout.test.js` - Modified/New: Update tests for new backend integration.
+-   `cypress/e2e/crewai_full_journey.cy.js` - New: E2E test for the complete user journey through the CrewAI system.
 
 ### Notes
 
@@ -183,5 +184,7 @@
     -   [ ] 18.2 Write integration tests for the CrewAI agents and their interactions in `api/crewai_agents/tests/test_agents.py`.
     -   [ ] 18.3 Write integration tests for the full CrewAI workflow in `api/crewai_agents/tests/test_crew.py`.
     -   [ ] 18.4 Write integration tests for the Node.js proxy endpoint in `server.test.js`.
-    -   [ ] 18.5 Update existing frontend tests or create new ones to reflect the new backend integration.
-    -   [ ] 18.6 Set up E2E tests for the complete user journey through the CrewAI system.
+    -   [x] 18.5 Update existing frontend tests or create new ones to reflect the new backend integration.
+    -   [x] 18.6 Set up E2E tests for the complete user journey through the CrewAI system.
+
+-   [x] 18.0 **Comprehensive Testing of CrewAI System**

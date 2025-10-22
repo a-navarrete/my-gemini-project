@@ -100,8 +100,7 @@ def _strip_code_fences(text: str) -> str:
         return text
 
     cleaned = text.strip()
-    fence_pattern = r"^```(?:json)?\s*([\s\S]*?)\s*```$"
-    match = re.match(fence_pattern, cleaned, flags=re.IGNORECASE)
-    if match:
-        return match.group(1).strip()
+    # Remove trailing ``` if present
+    if cleaned.endswith('\n```'):
+        cleaned = cleaned[:-4].strip()
     return cleaned

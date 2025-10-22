@@ -43,3 +43,6 @@ api/crewai_agents/venv_crewai/
 venv_crewai/
 venv_crewai_311/
 venv_crewai_ssl/
+# Python virtual environments
+venv/
+venv_crewai_ssl/

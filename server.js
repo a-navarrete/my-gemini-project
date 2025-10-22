@@ -7,16 +7,27 @@ import crewaiRouter from './api/routes/crewai.js';
 import logger from './config/logger.js';
 import flightAgent from './api/agents/flightAgent.js';
 
+console.log('Starting server.js...');
+
 dotenv.config();
+console.log('dotenv configured');
 
 const app = express();
+console.log('express app created');
+
 const port = process.env.PORT || 3002;
+console.log(`Port set to ${port}`);
+
 const allowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || 'http://localhost:3000')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
-const bodySizeLimit = process.env.HTTP_BODY_LIMIT || '100kb';
+console.log(`Allowed origins set to: ${allowedOrigins}`);
 
+const bodySizeLimit = process.env.HTTP_BODY_LIMIT || '100kb';
+console.log(`Body size limit set to: ${bodySizeLimit}`);
+
+console.log('Configuring CORS...');
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -32,7 +43,11 @@ app.use(
     credentials: true,
   })
 );
+console.log('CORS configured');
+
+console.log('Configuring express.json...');
 app.use(express.json({ limit: bodySizeLimit }));
+console.log('express.json configured');
 
 app.get('/', (req, res) => {
   res.send('Hello from the AI Travel Assistant API!');
@@ -46,9 +61,17 @@ app.get('/test-amadeus', async (req, res) => {
 
 console.log('Registering search router...');
 app.use('/api/search', searchRouter);
-app.use('/api/book', bookingRouter);
-app.use('/api/crewai', crewaiRouter);
+console.log('Search router registered');
 
+console.log('Registering booking router...');
+app.use('/api/book', bookingRouter);
+console.log('Booking router registered');
+
+console.log('Registering crewai router...');
+app.use('/api/crewai', crewaiRouter);
+console.log('Crewai router registered');
+
+console.log('Configuring error handling middleware...');
 // Basic error handling middleware
 app.use((err, req, res, _next) => {
   if (err.message === 'Not allowed by CORS') {
@@ -58,8 +81,16 @@ app.use((err, req, res, _next) => {
   logger.error(err.message, { stack: err.stack });
   res.status(500).send('Something broke!');
 });
+console.log('Error handling middleware configured');
 
-app.listen(port, () => {
-  logger.info(`Server is running on http://localhost:${port}`);
-  console.log('Server started and listening!');
-});
+let server;
+if (process.env.NODE_ENV !== 'test') {
+  server = app.listen(port, '0.0.0.0', () => {
+    console.log(`Server is running on http://localhost:${port}`);
+    logger.info(`Server is running on http://localhost:${port}`);
+    console.log('Server started and listening!');
+  });
+}
+
+export { app, server };
+export default app;

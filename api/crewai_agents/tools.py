@@ -125,24 +125,24 @@ def _resolve_destination_code(value: str) -> str | None:
         return trimmed.upper()
     return None
 
-def _flight_tool_fn(destination_iata_code: str) -> str:
+def _flight_search_tool_fn(origin_iata_code: str, destination_iata_code: str, departure_date: str) -> str:
     if should_use_mocks():
         return json.dumps(MOCK_FLIGHTS)
 
-    resolved_code = _resolve_destination_code(destination_iata_code)
-    if not resolved_code:
+    origin_code = _resolve_destination_code(origin_iata_code)
+    destination_code = _resolve_destination_code(destination_iata_code)
+
+    if not origin_code or not destination_code:
         return json.dumps([])
 
     try:
         token = _get_amadeus_token()
-        today = datetime.now().strftime('%Y-%m-%d')
-
         amadeus_url = 'https://test.api.amadeus.com/v2/shopping/flight-offers'
         headers = {'Authorization': f'Bearer {token}'}
         params = {
-            'originLocationCode': 'NYC',
-            'destinationLocationCode': resolved_code,
-            'departureDate': today,
+            'originLocationCode': origin_code,
+            'destinationLocationCode': destination_code,
+            'departureDate': departure_date,
             'adults': 1,
         }
 
@@ -273,10 +273,44 @@ nlp_tool = Tool.from_function(
     description="Extract destination and destinationCode from a user's natural language travel query.",
 )
 
-flight_tool = Tool.from_function(
-    func=_flight_tool_fn,
+def _flight_search_tool_fn(origin_iata_code: str, destination_iata_code: str, departure_date: str) -> str:
+    if should_use_mocks():
+        return json.dumps(MOCK_FLIGHTS)
+
+    origin_code = _resolve_destination_code(origin_iata_code)
+    destination_code = _resolve_destination_code(destination_iata_code)
+
+    if not origin_code or not destination_code:
+        return json.dumps([])
+
+    try:
+        token = _get_amadeus_token()
+        amadeus_url = 'https://test.api.amadeus.com/v2/shopping/flight-offers'
+        headers = {'Authorization': f'Bearer {token}'}
+        params = {
+            'originLocationCode': origin_code,
+            'destinationLocationCode': destination_code,
+            'departureDate': departure_date,
+            'adults': 1,
+        }
+
+        response = requests.get(amadeus_url, headers=headers, params=params)
+        response.raise_for_status()
+
+        raw_offers = response.json().get('data', [])[:5]
+        normalized = _normalize_amadeus_response(raw_offers)
+        return json.dumps(normalized)
+    except requests.exceptions.RequestException as exc:
+        print(f"Amadeus API request failed: {exc}")
+        return json.dumps([])
+    except ValueError as exc:
+        print(f"Configuration error: {exc}")
+        return json.dumps([])
+
+flight_search_tool = Tool.from_function(
+    func=_flight_search_tool_fn,
     name="Flight Search Tool",
-    description="Return up to five flight options for a given destination IATA code.",
+    description="Return up to five flight options for a given origin IATA code, destination IATA code, and departure date.",
 )
 
 hotel_tool = Tool.from_function(
@@ -285,4 +319,4 @@ hotel_tool = Tool.from_function(
     description="Return up to five hotel options for a given destination city.",
 )
 
-__all__ = ["nlp_tool", "flight_tool", "hotel_tool", "should_use_mocks"]
+__all__ = ["nlp_tool", "flight_search_tool", "hotel_tool", "should_use_mocks"]

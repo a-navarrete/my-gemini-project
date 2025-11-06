@@ -4,6 +4,7 @@ import cors from 'cors';
 import searchRouter from './api/routes/search.js';
 import bookingRouter from './api/routes/booking.js';
 import crewaiRouter from './api/routes/crewai.js';
+import chatbotRouter from './api/routes/chatbot.js';
 import logger from './config/logger.js';
 import flightAgent from './api/agents/flightAgent.js';
 
@@ -70,6 +71,10 @@ console.log('Booking router registered');
 console.log('Registering crewai router...');
 app.use('/api/crewai', crewaiRouter);
 console.log('Crewai router registered');
+
+console.log('Registering chatbot router...');
+app.use('/api/chatbot', chatbotRouter);
+console.log('Chatbot router registered');
 
 console.log('Configuring error handling middleware...');
 // Basic error handling middleware

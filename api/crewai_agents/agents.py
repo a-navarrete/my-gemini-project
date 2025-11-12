@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from crewai import Agent
 from langchain_openai import ChatOpenAI
 
-from .tools import nlp_tool, flight_tool, hotel_tool
+from .tools import nlp_tool, flight_search_tool, hotel_tool
 
 load_dotenv()
 
@@ -20,7 +20,7 @@ nlp_agent = Agent(
     role='Natural Language Query Analyst',
     goal='Extract destination and IATA code from travel queries.',
     backstory='Purpose-built to map natural language requests to structured search parameters.',
-    tools=[nlp_tool],
+    tools=[nlp_tool.dict()],
     llm=llm,
     verbose=False,
     allow_delegation=False,
@@ -31,7 +31,7 @@ flight_search_agent = Agent(
     role='Flight Options Specialist',
     goal='Find viable flights for a supplied destination code.',
     backstory='Optimized for querying flight data sources and returning concise options.',
-    tools=[flight_tool],
+    tools=[flight_search_tool.dict()],
     llm=llm,
     verbose=False,
     allow_delegation=False,
@@ -42,7 +42,7 @@ hotel_search_agent = Agent(
     role='Accommodation Specialist',
     goal='Retrieve hotel options for a given destination city.',
     backstory='Trained to source hotel availability and surface the most relevant listings.',
-    tools=[hotel_tool],
+    tools=[hotel_tool.dict()],
     llm=llm,
     verbose=False,
     allow_delegation=False,

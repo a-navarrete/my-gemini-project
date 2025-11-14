@@ -26,17 +26,17 @@
     -   [x] 2.3 Format the flight search results into a user-friendly response for the chatbot.
     -   [x] 2.4 Add a mechanism to select a flight from the results.
     -   [x] 2.5 Write tests for the flight search tool.
--   [ ] 3.0 Implement Hotel Search Functionality
+-   [x] 3.0 Implement Hotel Search Functionality
     -   [x] 3.1 Create a tool for the CrewAI agent to search for hotels.
     -   [x] 3.2 Implement the logic for the chatbot to ask for hotel search details (e.g., city, dates, number of guests).
     -   [x] 3.3 Format hotel search results for the chatbot.
     -   [x] 3.4 Add a mechanism to select a hotel from the results.
-    -   [ ] 3.5 Write tests for the hotel search tool.
+    -   [x] 3.5 Write tests for the hotel search tool.
 -   [ ] 4.0 Develop Chatbot Frontend
-    -   [ ] 4.1 Create a new React component `Chatbot.js` for the chat interface.
-    -   [ ] 4.2 Implement the UI for displaying chat messages (.user and bot).
-    -   [ ] 4.3 Create the text input for the user to type messages.
-    -   [ ] 4.4 Add support for interactive elements like buttons and quick replies in the chat interface.
+    -   [x] 4.1 Create a new React component `Chatbot.js` for the chat interface.
+    -   [x] 4.2 Implement the UI for displaying chat messages (.user and bot).
+    -   [x] 4.3 Create the text input for the user to type messages.
+    -   [x] 4.4 Add support for interactive elements like buttons and quick replies in the chat interface.
     -   [ ] 4.5 Write tests for the `Chatbot.js` component.
 -   [ ] 5.0 Integrate Frontend and Backend
     -   [ ] 5.1 Connect the `Chatbot.js` component to the `/api/chatbot` endpoint.

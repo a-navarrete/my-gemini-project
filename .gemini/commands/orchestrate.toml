@@ -1,0 +1,10 @@
+name = "orchestrate"
+description = "Run PRD → Tasks → Implementation workflow"
+prompt = """
+Follow these stages sequentially:
+1. Review .gemini/tasks/context.md
+2. Review .gemini/tasks/prd/0001-prd-ai-travel-assistant.md
+3. If PRD not ready, execute @./tasks/workflows/create-prd.md
+4. Generate tasks if tasks are not available. If tasks are available, use the latest file in .gemini/tasks/tasklists1
+5. Ping Implementer agent for execution
+"""

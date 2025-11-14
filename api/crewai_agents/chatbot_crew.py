@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from crewai import Agent, Task, Crew, Process
 from langchain_openai import ChatOpenAI
-from .tools import flight_search_tool, hotel_tool
+from .tools import flight_search_tool, hotel_tool, hotel_selection_tool
 
 # Load environment variables
 load_dotenv()
@@ -20,7 +20,7 @@ travel_agent = Agent(
     role='Conversational Travel Agent',
     goal='Have a conversation with the user to help them plan their trip. If the user wants to search for flights, you must gather the origin, destination, and dates. If the user wants to search for hotels, you must gather the city, check-in date, and check-out date. Once you have all the necessary information, you can use the available tools to search for flights or hotels.',
     backstory='You are a friendly and helpful travel agent that can chat with users to help them book their travel.',
-    tools=[flight_search_tool, hotel_tool], # Add the tools here
+    tools=[flight_search_tool, hotel_tool, hotel_selection_tool], # Add the tools here
     llm=llm,
     verbose=True,
     allow_delegation=True, # Allow delegation to other agents
@@ -40,7 +40,7 @@ If the user selects a flight by number, confirm the selection with the user, inc
 
 When you have hotel search results, format them in a user-friendly way. For each hotel, include the name, location, and price per night.
 After presenting the hotel options, ask the user if they would like to select a hotel.
-If the user selects a hotel by number, confirm the selection with the user, including the hotel details.
+If the user selects a hotel by number, use the 'hotel_selection_tool' with the previously presented hotel results and the user's selected number to confirm the selection with the user, including the hotel details.
 """,
     expected_output="""A helpful and friendly response to the user's message.
 If asking for more information, the response should be a clear question.

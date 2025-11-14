@@ -276,4 +276,28 @@ def hotel_tool(destination_city: str, check_in_date: str, check_out_date: str) -
         print(f"Configuration error: {exc}")
         return json.dumps([])
 
-__all__ = ["nlp_tool", "flight_search_tool", "hotel_tool", "should_use_mocks"]
+@tool("Hotel Selection Tool")
+def hotel_selection_tool(hotel_results_json: str, selection_index: int) -> str:
+    """Selects a hotel from a list of hotel search results based on a 1-based index.
+    Args:
+        hotel_results_json (str): A JSON string representing the list of hotel dictionaries.
+        selection_index (int): The 1-based index of the hotel to select from the list.
+    Returns:
+        str: A JSON string of the selected hotel dictionary, or an error message if the selection is invalid.
+    """
+    try:
+        hotels = json.loads(hotel_results_json)
+        if not isinstance(hotels, list):
+            return "Error: Invalid hotel results format. Expected a JSON list."
+
+        if not (1 <= selection_index <= len(hotels)):
+            return f"Error: Invalid selection index. Please choose a number between 1 and {len(hotels)}."
+
+        selected_hotel = hotels[selection_index - 1]
+        return json.dumps(selected_hotel)
+    except json.JSONDecodeError:
+        return "Error: Invalid JSON format for hotel results."
+    except Exception as e:
+        return f"An unexpected error occurred: {e}"
+
+__all__ = ["nlp_tool", "flight_search_tool", "hotel_tool", "hotel_selection_tool", "should_use_mocks"]

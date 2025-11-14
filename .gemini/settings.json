@@ -1,0 +1,28 @@
+{ "general": {
+    "checkpointing": {
+      "enabled": true
+    }
+  },
+  "loopGuard": true,
+  "maxRetryCount": 3,
+  "contextRefreshOnLoop": true,
+  "mcpServers": {
+    "context7": {
+      "httpUrl": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "ctx7sk-c35f4983-ebe0-42a8-a2a6-d6982948a76d",
+        "Accept": "application/json, text/event-stream"
+      
+      }
+    },
+"filesystem": {
+  "command": "node",
+  "args": ["/Users/arturo/Desktop/my-gemini-project/.gemini/mcp/fs-mcp.js"],
+  "cwd": "/Users/arturo/Desktop/my-gemini-project",
+  "timeout": 60000,
+  "trust": true,
+   "prober": "stdio"
+},
+    "playwright": { "command": "npx", "args": ["@playwright/mcp@latest"] }
+  }
+}

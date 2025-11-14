@@ -1,5 +1,4 @@
 
-node_modules/
 # Dependency/Build Directories
 /node_modules
 /dist
@@ -24,7 +23,6 @@ lerna-debug.log*
 # Editor/IDE Files
 .vscode/
 .vercel/
-.gemini/
 
 
 # Environment Variables

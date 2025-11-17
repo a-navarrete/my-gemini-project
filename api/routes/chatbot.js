@@ -1,5 +1,11 @@
 import express from 'express';
+import { randomUUID } from 'crypto';
 import travelAgent from '../agents/travelAgent.js';
+import {
+  getSessionHistory,
+  updateSessionHistory,
+  resetSessionStore,
+} from '../utils/chatbotSessionStore.js';
 
 const router = express.Router();
 
@@ -40,6 +46,8 @@ const CONTEXT_KEYWORDS = {
   flight: ['flight', 'flights', 'plane', 'airline', 'fare'],
   hotel: ['hotel', 'hotels', 'room', 'rooms', 'stay', 'accommodation'],
 };
+
+export { resetSessionStore };
 
 export const detectInteractionContext = (text = '') => {
   const normalized = text.toLowerCase();
@@ -114,10 +122,21 @@ export const formatChatbotResponse = (agentResponse, userMessage = '') => {
 // @access  Public
 router.post('/', async (req, res) => {
   try {
-    const { message } = req.body;
-    const response = await travelAgent.execute(message);
+    const { message, sessionId: incomingSessionId } = req.body;
+
+    if (!message || typeof message !== 'string') {
+      return res.status(400).json({ error: 'Message is required.' });
+    }
+
+    const sessionId = incomingSessionId || randomUUID();
+    const history = getSessionHistory(sessionId);
+
+    const response = await travelAgent.execute({ message, history });
     const formattedResponse = formatChatbotResponse(response, message);
-    res.json(formattedResponse);
+
+    updateSessionHistory(sessionId, message, formattedResponse.reply || formattedResponse.text);
+
+    res.json({ sessionId, ...formattedResponse });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

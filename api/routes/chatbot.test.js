@@ -4,8 +4,10 @@ import {
   getQuickRepliesForContext,
   getButtonsForContext,
 } from './chatbot.js';
-
-process.env.NODE_ENV = 'test';
+import {
+  resetSessionStore,
+  disableSessionPersistence,
+} from '../utils/chatbotSessionStore.js';
 
 describe('POST /api/chatbot', () => {
   let app;
@@ -19,6 +21,8 @@ describe('POST /api/chatbot', () => {
       default: travelAgentMock,
     }));
 
+    process.env.NODE_ENV = 'test';
+    disableSessionPersistence();
     // Now that the mock is in place, we can import the app
     const server = await import('../../server.js');
     app = server.app;
@@ -26,6 +30,7 @@ describe('POST /api/chatbot', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetSessionStore();
   });
 
   afterAll(async () => {
@@ -45,11 +50,12 @@ describe('POST /api/chatbot', () => {
       .send({ message });
 
     expect(response.status).toBe(200);
+    expect(response.body.sessionId).toBeTruthy();
     expect(response.body.reply).toBe(mockReply.reply);
     expect(response.body.text).toBe(mockReply.reply);
     expect(response.body.quickReplies).toEqual(getQuickRepliesForContext('general'));
     expect(response.body.buttons).toEqual(getButtonsForContext('general'));
-    expect(travelAgentMock.execute).toHaveBeenCalledWith(message);
+    expect(travelAgentMock.execute).toHaveBeenCalledWith({ message, history: [] });
   });
 
   it('should tailor interactive metadata for flight queries', async () => {
@@ -76,6 +82,39 @@ describe('POST /api/chatbot', () => {
     expect(response.status).toBe(200);
     expect(response.body.quickReplies).toEqual(getQuickRepliesForContext('hotel'));
     expect(response.body.buttons).toEqual(getButtonsForContext('hotel'));
+  });
+
+  it('should persist conversation history for the same session', async () => {
+    const firstMessage = 'Hello there!';
+    const secondMessage = 'Can you help me now?';
+
+    travelAgentMock.execute
+      .mockResolvedValueOnce({ reply: 'Hi! How can I help?' })
+      .mockResolvedValueOnce({ reply: 'Absolutely, what do you need?' });
+
+    const firstResponse = await request(app)
+      .post('/api/chatbot')
+      .send({ message: firstMessage });
+
+    const sessionId = firstResponse.body.sessionId;
+
+    expect(sessionId).toBeTruthy();
+    expect(travelAgentMock.execute).toHaveBeenNthCalledWith(1, {
+      message: firstMessage,
+      history: [],
+    });
+
+    await request(app)
+      .post('/api/chatbot')
+      .send({ message: secondMessage, sessionId });
+
+    expect(travelAgentMock.execute).toHaveBeenNthCalledWith(2, {
+      message: secondMessage,
+      history: [
+        { role: 'user', text: firstMessage },
+        { role: 'bot', text: 'Hi! How can I help?' },
+      ],
+    });
   });
 
   it('should handle errors from the travel agent', async () => {

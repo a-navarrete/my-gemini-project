@@ -2,7 +2,15 @@ import { spawn } from 'child_process';
 import path from 'path';
 
 class TravelAgent {
-  async execute(message) {
+  async execute(payload) {
+    const normalizedPayload =
+      typeof payload === 'string'
+        ? { message: payload, history: [] }
+        : {
+            message: payload?.message || '',
+            history: Array.isArray(payload?.history) ? payload.history : [],
+          };
+
     return new Promise((resolve, reject) => {
       const pythonExecutable = path.resolve(process.cwd(), 'venv_crewai_ssl/bin/python3');
       const pythonProcess = spawn(
@@ -34,7 +42,7 @@ class TravelAgent {
         resolve({ reply: dataToSend });
       });
 
-      pythonProcess.stdin.write(message);
+      pythonProcess.stdin.write(JSON.stringify(normalizedPayload));
       pythonProcess.stdin.end();
     });
   }

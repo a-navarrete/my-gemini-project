@@ -129,12 +129,12 @@ router.post('/', async (req, res) => {
     }
 
     const sessionId = incomingSessionId || randomUUID();
-    const history = getSessionHistory(sessionId);
+    const history = await getSessionHistory(sessionId);
 
     const response = await travelAgent.execute({ message, history });
     const formattedResponse = formatChatbotResponse(response, message);
 
-    updateSessionHistory(sessionId, message, formattedResponse.reply || formattedResponse.text);
+    await updateSessionHistory(sessionId, message, formattedResponse.reply || formattedResponse.text);
 
     res.json({ sessionId, ...formattedResponse });
   } catch (err) {

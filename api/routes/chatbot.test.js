@@ -6,7 +6,7 @@ import {
 } from './chatbot.js';
 import {
   resetSessionStore,
-  disableSessionPersistence,
+  setSessionStoreMode,
 } from '../utils/chatbotSessionStore.js';
 
 describe('POST /api/chatbot', () => {
@@ -22,15 +22,15 @@ describe('POST /api/chatbot', () => {
     }));
 
     process.env.NODE_ENV = 'test';
-    disableSessionPersistence();
+    setSessionStoreMode('memory');
     // Now that the mock is in place, we can import the app
     const server = await import('../../server.js');
     app = server.app;
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
-    resetSessionStore();
+    await resetSessionStore();
   });
 
   afterAll(async () => {

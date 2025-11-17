@@ -1,5 +1,11 @@
 import { jest } from '@jest/globals';
 import request from 'supertest';
+import {
+  getQuickRepliesForContext,
+  getButtonsForContext,
+} from './chatbot.js';
+
+process.env.NODE_ENV = 'test';
 
 describe('POST /api/chatbot', () => {
   let app;
@@ -29,7 +35,7 @@ describe('POST /api/chatbot', () => {
     }
   });
 
-  it('should return a successful response from the chatbot', async () => {
+  it('should return a successful response with interactive metadata', async () => {
     const message = 'Hello, chatbot!';
     const mockReply = { reply: 'Hello, user!' };
     travelAgentMock.execute.mockResolvedValue(mockReply);
@@ -39,8 +45,37 @@ describe('POST /api/chatbot', () => {
       .send({ message });
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual(mockReply);
+    expect(response.body.reply).toBe(mockReply.reply);
+    expect(response.body.text).toBe(mockReply.reply);
+    expect(response.body.quickReplies).toEqual(getQuickRepliesForContext('general'));
+    expect(response.body.buttons).toEqual(getButtonsForContext('general'));
     expect(travelAgentMock.execute).toHaveBeenCalledWith(message);
+  });
+
+  it('should tailor interactive metadata for flight queries', async () => {
+    const message = 'I need a flight from NYC to LAX';
+    travelAgentMock.execute.mockResolvedValue({ reply: 'Sure, let me gather those flight details.' });
+
+    const response = await request(app)
+      .post('/api/chatbot')
+      .send({ message });
+
+    expect(response.status).toBe(200);
+    expect(response.body.quickReplies).toEqual(getQuickRepliesForContext('flight'));
+    expect(response.body.buttons).toEqual(getButtonsForContext('flight'));
+  });
+
+  it('should tailor interactive metadata for hotel queries', async () => {
+    const message = 'Looking for a hotel in Paris';
+    travelAgentMock.execute.mockResolvedValue({ reply: 'Happy to help with hotels in Paris.' });
+
+    const response = await request(app)
+      .post('/api/chatbot')
+      .send({ message });
+
+    expect(response.status).toBe(200);
+    expect(response.body.quickReplies).toEqual(getQuickRepliesForContext('hotel'));
+    expect(response.body.buttons).toEqual(getButtonsForContext('hotel'));
   });
 
   it('should handle errors from the travel agent', async () => {

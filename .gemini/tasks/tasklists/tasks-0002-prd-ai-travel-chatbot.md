@@ -32,13 +32,13 @@
     -   [x] 3.3 Format hotel search results for the chatbot.
     -   [x] 3.4 Add a mechanism to select a hotel from the results.
     -   [x] 3.5 Write tests for the hotel search tool.
--   [ ] 4.0 Develop Chatbot Frontend
+-   [x] 4.0 Develop Chatbot Frontend
     -   [x] 4.1 Create a new React component `Chatbot.js` for the chat interface.
     -   [x] 4.2 Implement the UI for displaying chat messages (.user and bot).
     -   [x] 4.3 Create the text input for the user to type messages.
     -   [x] 4.4 Add support for interactive elements like buttons and quick replies in the chat interface.
-    -   [ ] 4.5 Write tests for the `Chatbot.js` component.
--   [ ] 5.0 Integrate Frontend and Backend
-    -   [ ] 5.1 Connect the `Chatbot.js` component to the `/api/chatbot` endpoint.
-    -   [ ] 5.2 Implement real-time message updates in the UI as the conversation progresses.
-    -   [ ] 5.3 Ensure the frontend can render the interactive elements sent from the backend.2
+    -   [x] 4.5 Write tests for the `Chatbot.js` component.
+-   [x] 5.0 Integrate Frontend and Backend
+    -   [x] 5.1 Connect the `Chatbot.js` component to the `/api/chatbot` endpoint.
+    -   [x] 5.2 Implement real-time message updates in the UI as the conversation progresses.
+    -   [x] 5.3 Ensure the frontend can render the interactive elements sent from the backend.2

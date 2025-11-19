@@ -15,11 +15,12 @@ class TravelAgent {
       const pythonExecutable = path.resolve(process.cwd(), 'venv_crewai_ssl/bin/python3');
       const pythonProcess = spawn(
         pythonExecutable,
-        ['-u', path.resolve(process.cwd(), 'api/crewai_agents/chatbot_crew.py')],
+        ['-u', '-m', 'api.crewai_agents.chatbot_crew'],
         {
-            env: {
-                ...process.env,
-            },
+          cwd: process.cwd(),
+          env: {
+            ...process.env,
+          },
         }
       );
 

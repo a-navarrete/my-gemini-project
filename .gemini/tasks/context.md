@@ -1,37 +1,11 @@
-# Project Context – AI Travel Assistant
-_Last updated: {{date}}_
-
-## Current Phase
-Task Orchestration & Implementation
-
-## Active PRD
-./tasks/prd/0002-prd-ai-travel-chatbot.md
-
-## Active Tasks
-./tasks/tasklists/tasks-0002-prd-ai-travel-chatbot.md
-
-## Agents
-- planner – plan-only orchestrator
-- implementer – execution specialist
-- reviewer – QA and verification
-- api-expert – external API research
-
-## Notes
-- Working with Gemini CLI 2.5 Pro.
-- Planner and API‑Expert operate in plan-only mode; Implementer executes; Reviewer validates.
-
-Update – Implementer
-Feature: Hotel Search Results Formatting
-Status: Completed
-Summary: Implemented and tested the logic for formatting hotel search results. Refactored tools to use BaseTool and fixed all failing tests.
-NextStep: Ready for review
-
-Update – Implementer
-Feature: Select Hotel from Results
-Status: In Progress
-Summary: Starting to work on adding a mechanism to select a hotel from the search results.
-NextStep: Implement the selection logic in the chatbot crew.Update – Implementer
-Feature: Select Hotel from Results
-Status: Completed
-Summary: Implemented the logic for the chatbot to ask for hotel search details by updating the  to accept check-in and check-out dates. Also, confirmed that formatting of hotel search results is handled by the existing configuration.
-NextStep: Ready for review
+## Update – Reviewer
+Feature: AI Travel Chatbot
+Tests: Failed
+Findings: 
+- The test suite is failing with multiple errors across different files.
+- The `api/routes/chatbot.test.js` is timing out, which needs to be investigated. It might be related to the way the `travelAgent` is mocked.
+- The `Chatbot.test.js` is failing because of outdated references in the test implementation.
+- Integration tests for `App` and `AiSearchBar` are failing due to multiple elements matching the same query. The tests need to be more specific.
+- The `bookingOrchestratorAgent.test.js` has assertion failures.
+- The implementation of `travelAgent.js` that spawns a Python process on every request is a performance concern that should be addressed.
+Recommendation: Rework

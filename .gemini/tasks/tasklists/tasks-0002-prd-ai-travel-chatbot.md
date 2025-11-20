@@ -14,13 +14,13 @@
 
 ## Tasks
 
--   [ ] 1.0 Setup Chatbot Backend
+-   [x] 1.0 Setup Chatbot Backend
     -   [x] 1.1 Create a new API endpoint `/api/chatbot` to handle chat messages.
     -   [x] 1.2 Develop a new agent `travelAgent.js` to process requests from the chatbot endpoint.
     -   [x] 1.3 Create a new CrewAI crew in `api/crewai_agents/chatbot_crew.py` for handling natural language requests.
     -   [x] 1.4 Define the tools for the CrewAI agents to use (e.g., flight search, hotel search).
     -   [x] 1.5 Write a test for the `/api/chatbot` endpoint.
--   [ ] 2.0 Implement Flight Search Functionality
+-   [x] 2.0 Implement Flight Search Functionality
     -   [x] 2.1 Create a tool for the CrewAI agent to search for flights, using the existing flight search logic.
     -   [x] 2.2 Implement the logic for the chatbot to ask clarifying questions for flight searches (e.g., dates, destination, origin).
     -   [x] 2.3 Format the flight search results into a user-friendly response for the chatbot.

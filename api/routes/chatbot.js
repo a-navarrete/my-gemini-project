@@ -8,6 +8,13 @@ import {
 } from '../utils/chatbotSessionStore.js';
 
 const router = express.Router();
+let activeTravelAgent = travelAgent;
+
+export const setTravelAgentImplementation = (implementation) => {
+  activeTravelAgent = implementation || travelAgent;
+};
+
+export const getTravelAgentImplementation = () => activeTravelAgent;
 
 const GENERAL_QUICK_REPLIES = [
   { title: 'Search for flights', value: 'search_flights' },
@@ -131,7 +138,7 @@ router.post('/', async (req, res) => {
     const sessionId = incomingSessionId || randomUUID();
     const history = await getSessionHistory(sessionId);
 
-    const response = await travelAgent.execute({ message, history });
+    const response = await activeTravelAgent.execute({ message, history });
     const formattedResponse = formatChatbotResponse(response, message);
 
     await updateSessionHistory(sessionId, message, formattedResponse.reply || formattedResponse.text);

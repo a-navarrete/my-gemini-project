@@ -128,8 +128,14 @@ def _resolve_destination_code(value: str) -> Union[str, None]:
     return None
 
 @tool("Flight Search Tool")
-def flight_search_tool(origin_iata_code: str, destination_iata_code: str, departure_date: str) -> str:
+def flight_search_tool(
+    origin_iata_code: str | None = None,
+    destination_iata_code: str | None = None,
+    departure_date: str | None = None,
+) -> str:
     """Return up to five flight options for a given origin IATA code, destination IATA code, and departure date."""
+    if not origin_iata_code or not destination_iata_code or not departure_date:
+        return json.dumps([])
     if should_use_mocks():
         return json.dumps(MOCK_FLIGHTS)
 
@@ -211,14 +217,18 @@ def _normalize_hotelbeds_response(data: list) -> list:
     return normalized_hotels
 
 @tool("Hotel Search Tool")
-def hotel_tool(destination_city: str, check_in_date: str, check_out_date: str) -> str:
+def hotel_tool(
+    destination_city: str | None = None,
+    check_in_date: str | None = None,
+    check_out_date: str | None = None,
+) -> str:
     """Return up to five hotel options for a given destination city, check-in date, and check-out date.
     The dates should be in YYYY-MM-DD format.
     """
     if should_use_mocks():
         return json.dumps(MOCK_HOTELS)
 
-    if not isinstance(destination_city, str):
+    if not isinstance(destination_city, str) or not check_in_date or not check_out_date:
         return json.dumps([])
 
     hotelbeds_code = _hotelbeds_city_code(destination_city)

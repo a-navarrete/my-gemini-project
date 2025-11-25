@@ -3,6 +3,7 @@ import request from 'supertest';
 import {
   getQuickRepliesForContext,
   getButtonsForContext,
+  setTravelAgentImplementation,
 } from './chatbot.js';
 import {
   resetSessionStore,
@@ -17,12 +18,9 @@ describe('POST /api/chatbot', () => {
     travelAgentMock = {
       execute: jest.fn(),
     };
-    await jest.unstable_mockModule('../agents/travelAgent.js', () => ({
-      default: travelAgentMock,
-    }));
-
     process.env.NODE_ENV = 'test';
     setSessionStoreMode('memory');
+    setTravelAgentImplementation(travelAgentMock);
     // Now that the mock is in place, we can import the app
     const server = await import('../../server.js');
     app = server.app;
@@ -34,6 +32,7 @@ describe('POST /api/chatbot', () => {
   });
 
   afterAll(async () => {
+    setTravelAgentImplementation(null);
     const { server } = await import('../../server.js');
     if (server) {
       server.close();

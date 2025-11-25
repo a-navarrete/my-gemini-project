@@ -233,6 +233,28 @@
       "payment": {
         "transactionId": "txn_1761151669295"
       }
+    },
+    {
+      "flight": {
+        "airline": "DemoAir",
+        "flightNumber": "DA 100",
+        "from": "NYC",
+        "to": "LON",
+        "price": 512.34
+      },
+      "hotel": {
+        "id": "MOCK-HOTEL-1",
+        "name": "Mock Grand London",
+        "location": "London City Center",
+        "pricePerNight": 189
+      },
+      "user": {
+        "name": "Arturo Navarrette",
+        "email": "hello@arturonavarrete.co"
+      },
+      "payment": {
+        "transactionId": "txn_1763657345005"
+      }
     }
   ]
 }

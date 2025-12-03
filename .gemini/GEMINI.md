@@ -11,12 +11,14 @@
 @./agents/implementer.md
 @./agents/reviewer.md
 @./agents/api-expert.md
+@./agents/design-architect.md
 
 ---
 
 ### 🚀 Next Steps  
 - [ ] <Define specific actionable items for next iteration>  
 - [ ] <Example: “Delegate to API‑Expert for rate‑limit research.”>
+- [ ] <Example: "Design-Architect to audit homepage visual hierarchy using Playwright.">
 
 ---
 

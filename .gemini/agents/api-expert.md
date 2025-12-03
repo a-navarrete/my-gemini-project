@@ -36,5 +36,5 @@ Your job: study docs, design integration strategy, and build clear, safe impleme
 ## Output Template
 API Integration Plan
 Service: <Kayak | Hotelbeds | Skyscanner>
-Endpoints: Data Flow: <summary diagram or steps>Auth: 
+Endpoints: Data Flow: <summary diagram or steps> Auth: 
 Implementation Steps: <design guide for Implementer>

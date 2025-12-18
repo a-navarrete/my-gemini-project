@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import searchRouter from './api/routes/search.js';
 import bookingRouter from './api/routes/booking.js';
 import crewaiRouter from './api/routes/crewai.js';
 import chatbotRouter from './api/routes/chatbot.js';
@@ -59,10 +58,6 @@ app.get('/test-amadeus', async (req, res) => {
   const flights = await flightAgent.execute('LHR');
   res.json(flights);
 });
-
-console.log('Registering search router...');
-app.use('/api/search', searchRouter);
-console.log('Search router registered');
 
 console.log('Registering booking router...');
 app.use('/api/book', bookingRouter);

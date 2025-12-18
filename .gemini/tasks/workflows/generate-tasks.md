@@ -1,60 +1,66 @@
-# Rule: Generating a Task List from a PRD
+# Rule: Generating a Product-Driven Task List from a PRD
 
-## Goal
+## 🎯 Goal
+To guide the **Planner** in creating a detailed, phased task list that ensures the **Implementer** follows the design specs and clears the **Design Gate** before completion.
 
-To guide an AI assistant in creating a detailed, step-by-step task list in Markdown format based on an existing Product Requirements Document (PRD). The task list should guide a developer through implementation.
+## 📁 Output
+- **Location**: `/tasks/`
+- **Filename**: `tasks-[prd-file-name].md`
 
-## Output
+## 🔄 Phased Process
 
-- **Format:** Markdown (`.md`)
-- **Location:** `/tasks/`
-- **Filename:** `tasks-[prd-file-name].md` (e.g., `tasks-0001-prd-user-profile-editing.md`)
+### Phase 1: Parent Task Generation (The PDLC Framework)
+Analyze the PRD and codebase. You must generate 4-6 high-level Parent Tasks that follow this mandatory sequence:
+1.  **[Design Sync]**: Preparation of UI components and Tailwind specs.
+2.  **[Core Logic]**: Backend/API/State management implementation.
+3.  **[UI/UX Build]**: Frontend implementation based on Architect's specs.
+4.  **[Visual QA & Audit]**: Verification of the UI using Playwright.
+5.  **[Final Review]**: Code audit and Design Gate sign-off.
 
-## Process
+**Wait for Confirmation**: Present these parent tasks and wait for the user to respond with "**Go**" before generating sub-tasks.
 
-1.  **Receive PRD Reference:** The user points the AI to a specific PRD file
-2.  **Analyze PRD:** The AI reads and analyzes the functional requirements, user stories, and other sections of the specified PRD.
-3.  **Assess Current State:** Review the existing codebase to understand existing infrastructre, architectural patterns and conventions. Also, identify any existing components or features that already exist and could be relevant to the PRD requirements. Then, identify existing related files, components, and utilities that can be leveraged or need modification.
-4.  **Phase 1: Generate Parent Tasks:** Based on the PRD analysis and current state assessment, create the file and generate the main, high-level tasks required to implement the feature. Use your judgement on how many high-level tasks to use. It's likely to be about five tasks. Present these tasks to the user in the specified format (without sub-tasks yet). Inform the user: "I have generated the high-level tasks based on the PRD. Ready to generate the sub-tasks? Respond with 'Go' to proceed."
-5.  **Wait for Confirmation:** Pause and wait for the user to respond with "Go".
-6.  **Phase 2: Generate Sub-Tasks:** Once the user confirms, break down each parent task into smaller, actionable sub-tasks necessary to complete the parent task. Ensure sub-tasks logically follow from the parent task, cover the implementation details implied by the PRD, and consider existing codebase patterns where relevant without being constrained by them.
-7.  **Identify Relevant Files:** Based on the tasks and PRD, identify potential files that will need to be created or modified. List these under the `Relevant Files` section, including corresponding test files if applicable.
-8.  **Generate Final Output:** Combine the parent tasks, sub-tasks, relevant files, and notes into the final Markdown structure.
-9.  **Save Task List:** Save the generated document in the `/tasks/` directory with the filename `tasks-[prd-file-name].md`, where `[prd-file-name]` matches the base name of the input PRD file (e.g., if the input was `0001-prd-user-profile-editing.md`, the output is `tasks-0001-prd-user-profile-editing.md`).
+### Phase 2: Detailed Sub-Task Breakdown
+Once confirmed, break down each parent task. You **must** include these specific sub-tasks:
 
-## Output Format
+* **In [Design Sync]**: 
+    - [ ] Create/Update local design tokens or Tailwind config if necessary.
+    - [ ] Define "Skeleton Loader" components for the Loading State.
+* **In [UI/UX Build]**:
+    - [ ] Implement Mobile-First responsive layouts (375px).
+    - [ ] Apply "Travel Intelligence" (e.g., price transparency, clear CTAs).
+* **In [Visual QA & Audit]**:
+    - [ ] Run `playwright-mcp-server` to audit the Happy Path.
+    - [ ] Capture Desktop and Mobile screenshots for the Design Architect.
+    - [ ] Run Accessibility audit (`accessibility.snapshot()`).
 
-The generated task list _must_ follow this structure:
+## 📋 Output Format
 
 ```markdown
-## Relevant Files
+## 🔗 Relevant Files
+- `path/to/file.tsx` - [Reason]
+- `path/to/file.test.tsx` - [Tests]
 
-- `path/to/potential/file1.ts` - Brief description of why this file is relevant (e.g., Contains the main component for this feature).
-- `path/to/file1.test.ts` - Unit tests for `file1.ts`.
-- `path/to/another/file.tsx` - Brief description (e.g., API route handler for data submission).
-- `path/to/another/file.test.tsx` - Unit tests for `another/file.tsx`.
-- `lib/utils/helpers.ts` - Brief description (e.g., Utility functions needed for calculations).
-- `lib/utils/helpers.test.ts` - Unit tests for `helpers.ts`.
+### 💡 Implementation Notes
+- Ensure the **Design Architect** provides the hex codes and spacing scales before starting Task 3.0.
+- All travel data displays must handle "Price + Taxes" transparency.
 
-### Notes
+## 🏁 Task List
+- [ ] 1.0 [Design Sync] - Product Strategy & UI Specs
+  - [ ] 1.1 Review PRD with Design Architect for "Happy Path" alignment.
+  - [ ] 1.2 Identify reusable components from the existing design system.
+- [ ] 2.0 [Logic] - API Integration & Data Handling
+- [ ] 3.0 [UI/UX] - Interface Implementation (Mobile-First)
+- [ ] 4.0 [Visual QA] - Playwright Audit & Gate Check
+  - [ ] 4.1 Capturing Visual Evidence for Architect Review.
+  - [ ] 4.2 Verifying Loading and Error states.
+- [ ] 5.0 [Review] - Final Code & Product Sign-off
 
-- Unit tests should typically be placed alongside the code files they are testing (e.g., `MyComponent.tsx` and `MyComponent.test.tsx` in the same directory).
-- Use `npx jest [optional/path/to/test/file]` to run tests. Running without a path executes all tests found by the Jest configuration.
+ ## 🎯 Target Audience
+The reader is a Junior Implementer Agent. The list should be a recipe: if they follow every checkmark, the Reviewer Agent should find 0 errors.
 
-## Tasks
+## 🚦 Final Instructions
+1. Do not skip the "Wait for Confirmation" step.
 
-- [ ] 1.0 Parent Task Title
-  - [ ] 1.1 [Sub-task description 1.1]
-  - [ ] 1.2 [Sub-task description 1.2]
-- [ ] 2.0 Parent Task Title
-  - [ ] 2.1 [Sub-task description 2.1]
-- [ ] 3.0 Parent Task Title (may not require sub-tasks if purely structural or configuration)
-```
+2. Ensure every task list has a "Visual QA" phase.
 
-## Interaction Model
-
-The process explicitly requires a pause after generating parent tasks to get user confirmation ("Go") before proceeding to generate the detailed sub-tasks. This ensures the high-level plan aligns with user expectations before diving into details.
-
-## Target Audience
-
-Assume the primary reader of the task list is a **junior developer** who will implement the feature with awareness of the existing codebase context.
+3. Reference the PRD states (Loading, Empty, Error) in the sub-tasks.

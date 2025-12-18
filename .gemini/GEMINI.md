@@ -15,30 +15,31 @@
 
 ---
 
-### 🚀 Next Steps  
-- [ ] <Define specific actionable items for next iteration>  
-- [ ] <Example: “Delegate to API‑Expert for rate‑limit research.”>
-- [ ] <Example: "Design-Architect to audit homepage visual hierarchy using Playwright.">
+### 🚀 Next Steps (Orchestration Pipeline)
+- [ ] **Strategy**: Planner & Design-Architect sync to define User Journey/Happy Path.
+- [ ] **Specs**: Design-Architect provides Tailwind/UX specs to Implementer.
+- [ ] **Development**: Implementer builds the feature logic.
+- [ ] **Visual QA**: Design-Architect captures Playwright screenshots for audit.
+- [ ] **Final Review**: Reviewer Agent verifies Code Quality + Design Gate status.
 
 ---
 
-### 📁 Context Update  
-Append this summary to `.gemini/tasks/context.md`:
+### 📁 Context Update (PDLC Tracking)
+*Append this summary to `.gemini/tasks/context.md`:*
 
-Update – 
-Feature: <feature name or ticket ID>
-Agents Involved: <list names>
-Result: <summary of progress>
-Next Step: <follow‑up action>
-
-
----
-
-### 🧩 Session Metadata  
-- Run mode: Plan / Implement / Review  
-- Tokens used: <estimate or auto‑filled stat>  
-- Context snapshot: <path to context .md>  
+Update – [Feature/Ticket ID]
+- **Design Gate Status**: [🟢 Pass / 🟡 Revision / ⏳ Pending]
+- **Agents Involved**: <list names>
+- **Blockers**: <Mention if UI Specs or API data are missing>
+- **Next Step**: <Move to Implementation / Return for Visual Fixes>
 
 ---
 
-✅ _End of Orchestration Cycle_
+### 🧩 Session Metadata
+- **Run Mode**: Plan / Implement / Review / Visual-QA
+- **Design Checkpoint**: [Initial Strategy / Mid-Build / Final Audit]
+- **Context Snapshot**: @./tasks/context.md
+
+---
+
+✅ _End of Orchestration Cycle_

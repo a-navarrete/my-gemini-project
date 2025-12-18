@@ -1,10 +1,15 @@
 name = "orchestrate"
-description = "Run PRD → Tasks → Implementation workflow"
+description = "Execute the Product-Led Development Lifecycle (Discovery → Design → Build → QA)"
 prompt = """
-Follow these stages sequentially:
-1. Review .gemini/tasks/context.md
-2. Review .gemini/tasks/prd/0001-prd-ai-travel-assistant.md
-3. If PRD not ready, execute @./tasks/workflows/create-prd.md
-4. Generate tasks if tasks are not available. If tasks are available, use the latest file in .gemini/tasks/tasklists1
-5. Ping Implementer agent for execution
+Act as the Project Lead. Follow this state-aware logic to determine the next action:
+
+1. **Context Sync**: Read `.gemini/tasks/context.md` to identify the 'Active Feature' and its current 'Gate Status'.
+2. **Phase Determination**:
+    - **IF no PRD exists**: Execute `@./tasks/workflows/create-prd.md`. Ensure the Design Architect leads the discovery.
+    - **IF PRD exists but no Task List**: Execute `@./tasks/workflows/generate-tasks.md`. Ensure the 'Visual QA' phase is included.
+    - **IF Task List exists & Design Gate is ⏳ PENDING**: Ping the Planner and Design Architect for the 'Strategy Handshake' to finalize UI specs.
+    - **IF Implementation is 🏗️ IN PROGRESS**: Ping the Implementer agent to execute the next sub-task according to `@./tasks/workflows/process-task-list.md`.
+    - **IF Implementation is ✅ COMPLETE but Visual QA is ⏳ PENDING**: Ping the Design Architect to perform a Playwright Audit using the 'Visual QA Template'.
+    - **IF Visual QA is 🟢 PASS**: Ping the Reviewer agent for final technical and design compliance check.
+3. **Log Progress**: After every turn, update the 'Feature Pipeline' table in `.gemini/tasks/context.md`.
 """

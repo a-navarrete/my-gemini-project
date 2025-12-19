@@ -34,17 +34,17 @@
   - [x] 2.4 Structure the API response to include flight data formatted for consumption by the new `FlightResultCard` component.
   - [x] 2.5 Write integration tests for the `/api/chatbot` endpoint to verify contextual query handling.
 
-- [ ] 3.0 **Frontend: Refactor Chatbot UI with Tailwind CSS**
+- [x] 3.0 **Frontend: Refactor Chatbot UI with Tailwind CSS**
   - [x] 3.1 Remove all classNames and styles from `Chatbot.css` and delete the file.
   - [x] 3.2 Apply Tailwind CSS classes from `.gemini/ui-library.md` to `Chatbot.js` and its child components (`QuickReply.js`, `InteractiveButtons.js`) to match the new design mockups.
   - [x] 3.3 Ensure the refactored chat window is responsive and adheres to the mobile-first principle (verifiable at 375px width).
-  - [ ] 3.4 Update the `Chatbot.test.js` snapshot and functional tests to reflect the new DOM structure.
+  - [x] 3.4 Update the `Chatbot.test.js` snapshot and functional tests to reflect the new DOM structure.
 
-- [ ] 4.0 **Frontend: Implement Flight Result Cards**
-  - [ ] 4.1 Create the new `web/src/components/FlightResultCard.js` file.
-  - [ ] 4.2 Build the component to accept flight data as props and render it according to the Design Architect's specs. It should clearly display price, times, duration, and fare options.
-  - [ ] 4.3 Create the corresponding `FlightResultCard.test.js` and write unit tests to ensure the component renders correctly with various data inputs.
-  - [ ] 4.4 In `Chatbot.js`, add logic to detect when a message from the bot contains flight data and render a list of `FlightResultCard` components accordingly.
+- [x] 4.0 **Frontend: Implement Flight Result Cards**
+  - [x] 4.1 Create the new `web/src/components/FlightResultCard.js` file.
+  - [x] 4.2 Build the component to accept flight data as props and render it according to the Design Architect's specs. It should clearly display price, times, duration, and fare options.
+  - [x] 4.3 Create the corresponding `FlightResultCard.test.js` and write unit tests to ensure the component renders correctly with various data inputs.
+  - [x] 4.4 In `Chatbot.js`, add logic to detect when a message from the bot contains flight data and render a list of `FlightResultCard` components accordingly.
 
 - [ ] 5.0 **Integration: Connect UI to Backend and Test End-to-End**
   - [ ] 5.1 Perform a test in the live application to ensure a user query like "flights to nyc" flows correctly from the UI to the backend and returns structured flight cards.

@@ -40,11 +40,12 @@ class TravelAgent {
 
   buildMockResponse({ message }) {
     const trimmed = (message || '').trim();
+    const friendlyIntro = 'Sure, let me help with that!';
     if (!trimmed) {
-      return { reply: 'How can I assist with your travel plans today?' };
+      return { reply: `${friendlyIntro} How can I assist with your travel plans today?` };
     }
     return {
-      reply: `I have logged your request: "${trimmed}". Let me gather the best travel options for you.`,
+      reply: `${friendlyIntro} I have logged your request: "${trimmed}". Let me gather the best travel options for you.`,
     };
   }
 

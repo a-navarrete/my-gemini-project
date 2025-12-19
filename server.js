@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import bookingRouter from './api/routes/booking.js';
 import crewaiRouter from './api/routes/crewai.js';
 import chatbotRouter from './api/routes/chatbot.js';
@@ -17,6 +20,11 @@ console.log('express app created');
 
 const port = process.env.PORT || 3002;
 console.log(`Port set to ${port}`);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const webBuildPath = path.join(__dirname, 'web', 'build');
+const staticIndexPath = path.join(webBuildPath, 'index.html');
 
 const allowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || 'http://localhost:3000')
   .split(',')
@@ -49,8 +57,8 @@ console.log('Configuring express.json...');
 app.use(express.json({ limit: bodySizeLimit }));
 console.log('express.json configured');
 
-app.get('/', (req, res) => {
-  res.send('Hello from the AI Travel Assistant API!');
+app.get('/healthz', (_req, res) => {
+  res.json({ status: 'ok' });
 });
 
 app.get('/test-amadeus', async (req, res) => {
@@ -70,6 +78,20 @@ console.log('Crewai router registered');
 console.log('Registering chatbot router...');
 app.use('/api/chatbot', chatbotRouter);
 console.log('Chatbot router registered');
+
+const shouldServeStatic = process.env.SERVE_STATIC !== 'false';
+if (shouldServeStatic && fs.existsSync(staticIndexPath)) {
+  console.log(`Serving static assets from ${webBuildPath}`);
+  app.use(express.static(webBuildPath));
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(staticIndexPath);
+  });
+} else {
+  console.log('Static assets not found or serving disabled; skipping static middleware.');
+}
 
 console.log('Configuring error handling middleware...');
 // Basic error handling middleware

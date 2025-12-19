@@ -5,6 +5,7 @@
 /build
 /\.data
 node_modules_failed_install*/
+.cypress-cache/
 
 
 # Logs

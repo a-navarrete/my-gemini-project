@@ -1,14 +1,30 @@
 /**
- * @typedef {Object} ParsedDestination
- * @property {string | null} destination - Normalized city/location for services that expect a name.
- * @property {string | null} destinationCode - IATA code suitable for airline lookups.
+ * @typedef {Object} ParsedLocation
+ * @property {string | null} city - Normalized city/location for services that expect a name.
+ * @property {string | null} code - IATA code suitable for airline lookups.
+ */
+
+/**
+ * @typedef {Object} ParsedPassengers
+ * @property {number} adults
+ * @property {number} children
+ * @property {number} infants
+ */
+
+/**
+ * @typedef {Object} ParsedQuery
+ * @property {ParsedLocation} origin
+ * @property {ParsedLocation} destination
+ * @property {string | null} date
+ * @property {ParsedPassengers} passengers
  */
 
 /**
  * @typedef {Object} NlpAgent
- * @property {string} role - The role of the agent.
- * @property {string} goal - The goal of the agent.
- * @property {(query: string) => ParsedDestination} execute - The function to execute the agent's task.
+ * @property {string} role
+ * @property {string} goal
+ * @property {string} backstory
+ * @property {(query: string) => ParsedQuery} execute
  */
 
 const DESTINATION_ALIASES = {
@@ -46,8 +62,93 @@ const SORTED_ALIAS_KEYS = Object.keys(DESTINATION_ALIASES).sort(
   (a, b) => b.length - a.length
 );
 
-const IATA_CODE_REGEX = /\b([A-Z]{3})\b/;
-const STOP_WORD_REGEX = /\b(for|with|on|in|by|during|next|this|today|tomorrow|from)\b/i;
+const cleanLocationString = (text) => {
+  const stopWords = /\b(for|with|on|in|by|during|next|this|today|tomorrow)\b/gi;
+  return text.split(/[,.!?]/)[0].replace(stopWords, '').trim();
+};
+
+const parseLocation = (text) => {
+  if (!text) {
+    return { city: null, code: null };
+  }
+  const cleanedText = cleanLocationString(text).toLowerCase();
+
+  const alias = DESTINATION_ALIASES[cleanedText];
+  if (alias) {
+    return { city: alias.city, code: alias.iataCode };
+  }
+
+  const iataMatch = cleanedText.match(/\b([A-Z]{3})\b/);
+  if (iataMatch) {
+    const code = iataMatch[1].toUpperCase();
+    const foundAlias = Object.values(DESTINATION_ALIASES).find(a => a.iataCode === code);
+    return { city: foundAlias?.city || null, code };
+  }
+
+  const matchedAliasKey = SORTED_ALIAS_KEYS.find((key) =>
+    cleanedText.startsWith(key)
+  );
+  if (matchedAliasKey) {
+    const foundAlias = DESTINATION_ALIASES[matchedAliasKey];
+    return { city: foundAlias.city, code: foundAlias.iataCode };
+  }
+
+  return { city: text, code: null };
+};
+
+const extractPassengers = (query) => {
+  const passengers = { adults: 0, children: 0, infants: 0 };
+  const passengersMatch = query.match(/for\s+((?:\d+\s+\w+)(?:(?:,?\s+and)?\s*\d+\s+\w+)*)/i);
+  if (!passengersMatch) {
+    return passengers;
+  }
+
+  const passengerStr = passengersMatch[1];
+  const adultMatch = passengerStr.match(/(\d+)\s+adult/i);
+  if (adultMatch) passengers.adults = parseInt(adultMatch[1], 10);
+
+  const childMatch = passengerStr.match(/(\d+)\s+child/i);
+  if (childMatch) passengers.children = parseInt(childMatch[1], 10);
+
+  const infantMatch = passengerStr.match(/(\d+)\s+infant/i);
+  if (infantMatch) passengers.infants = parseInt(infantMatch[1], 10);
+  
+  if (passengers.adults === 0 && passengers.children === 0 && passengers.infants === 0) {
+    const numberMatch = passengerStr.match(/(\d+)/);
+    if (numberMatch) passengers.adults = parseInt(numberMatch[1], 10);
+  }
+
+  return passengers;
+};
+
+const extractDate = (query) => {
+  const normalizedQuery = query.toLowerCase();
+  const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  
+  const nextDayMatch = normalizedQuery.match(/next\s+(\w+day)/);
+  if (nextDayMatch) {
+    const dayName = nextDayMatch[1];
+    const dayIndex = days.indexOf(dayName);
+    if (dayIndex !== -1) {
+      const d = new Date();
+      d.setDate(d.getDate() + ((dayIndex + 7 - d.getDay()) % 7) + 7);
+      return d.toISOString().split('T')[0];
+    }
+  }
+
+  if (normalizedQuery.includes('tomorrow')) {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T-')[0];
+  }
+  
+  if (normalizedQuery.includes('today')) {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  return null;
+};
+
 
 /** @type {NlpAgent} */
 const nlpAgent = {
@@ -56,43 +157,28 @@ const nlpAgent = {
   backstory: 'An AI assistant specialized in understanding and processing human language for travel planning.',
   execute: (query = '') => {
     if (typeof query !== 'string') {
-      return { destination: null, destinationCode: null };
+      return { origin: null, destination: null, date: null, passengers: null };
     }
 
-    const explicitCodeMatch = query.match(IATA_CODE_REGEX);
-    if (explicitCodeMatch) {
-      const candidate = explicitCodeMatch[1].toUpperCase();
-      const alias = DESTINATION_ALIASES[candidate.toLowerCase()];
-      return {
-        destination: alias?.city || null,
-        destinationCode: alias?.iataCode || candidate,
-      };
-    }
+    const fromMatch = query.match(/from\s+([\w\s,]+)\b/i);
+    const toMatch = query.match(/to\s+([\w\s,]+)\b/i);
 
-    const destinationMatch = query.match(/to\s+([\p{L}\s]+)/iu);
-    const rawDestination = destinationMatch ? destinationMatch[1].trim() : '';
-    if (!rawDestination) {
-      return { destination: null, destinationCode: null };
-    }
+    const originText = fromMatch ? fromMatch[1] : '';
+    const destinationText = toMatch ? toMatch[1] : '';
 
-    const truncatedDestination = rawDestination
-      .split(/[,.!?]/)[0]
-      .split(STOP_WORD_REGEX)[0]
-      .trim();
+    const origin = parseLocation(originText);
+    const destination = parseLocation(destinationText);
 
-    const normalizedDestination = truncatedDestination.toLowerCase();
-    const matchedAlias = SORTED_ALIAS_KEYS.find((key) =>
-      normalizedDestination.startsWith(key)
-    );
+    const passengers = extractPassengers(query);
+    if (passengers.adults === 0) passengers.adults = 1;
 
-    if (matchedAlias) {
-      const alias = DESTINATION_ALIASES[matchedAlias];
-      return { destination: alias.city, destinationCode: alias.iataCode };
-    }
+    const date = extractDate(query);
 
     return {
-      destination: truncatedDestination || null,
-      destinationCode: null,
+      origin,
+      destination,
+      date,
+      passengers,
     };
   },
 };

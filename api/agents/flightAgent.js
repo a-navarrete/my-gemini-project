@@ -1,13 +1,21 @@
 import axios from 'axios';
 
 /**
+ * @typedef {Object} Fare
+ * @property {string} name - The name of the fare class (e.g., 'Basic Economy').
+ * @property {number} price - The price of this specific fare.
+ * @property {string} details - A brief description of the fare's features.
+ */
+
+/**
  * @typedef {Object} Flight
  * @property {number} id
  * @property {string} airline
  * @property {string} flightNumber
  * @property {string} from
  * @property {string} to
- * @property {number} price
+ * @property {number} price - The price of the lowest available fare.
+ * @property {Fare[]} fares - An array of available fare options.
  */
 
 /**
@@ -39,13 +47,34 @@ const normalizeAmadeusResponse = (data) => {
   return data.map((offer, index) => {
     const firstItinerary = offer.itineraries[0];
     const firstSegment = firstItinerary.segments[0];
+    const basePrice = parseFloat(offer.price.total);
+
+    const fares = [
+      {
+        name: 'Basic Economy',
+        price: basePrice,
+        details: 'No checked bag, no seat selection',
+      },
+      {
+        name: 'Main Cabin',
+        price: basePrice + 50,
+        details: '1 checked bag, seat selection included',
+      },
+      {
+        name: 'Comfort+',
+        price: basePrice + 90,
+        details: 'Priority boarding, extra legroom, free changes',
+      },
+    ];
+
     return {
       id: offer.id || index,
       airline: firstSegment.carrierCode, // This is an airline code, not the full name
       flightNumber: `${firstSegment.carrierCode} ${firstSegment.number}`,
       from: firstSegment.departure.iataCode,
       to: firstSegment.arrival.iataCode,
-      price: parseFloat(offer.price.total),
+      price: basePrice, // Set to the lowest fare price
+      fares,
     };
   });
 };

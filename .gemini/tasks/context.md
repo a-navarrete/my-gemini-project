@@ -1,50 +1,48 @@
-# Project Context: AI Travel Assistant
+# 🛰️ Project Context & Feature Pipeline
 
-## 🎯 Current Product Goal
-*Describe the high-level objective here (e.g., Implementing the Flight Search Result Page).*
-
----
-
-## 🚦 Feature Pipeline & Gate Status
-*This table tracks the progress of features through the Product Development Life Cycle.*
-
-| Feature Name | Strategy (Planner) | Design Gate (Architect) | Implementation | Review (Final) |
-| :--- | :---: | :---: | :---: | :---: |
-| Flight Search API | ✅ | N/A (Backend) | ✅ | ✅ |
-| Results Grid UI | ✅ | 🟡 IN QA | 🏗️ IN PROGRESS | ⏳ PENDING |
-| Booking Modal | ⏳ PENDING | ⏳ PENDING | ⏳ PENDING | ⏳ PENDING |
-
-**Legend**: ⏳ Pending | ✅ Approved | 🏗️ In Progress | 🟡 Needs Revision | ❌ Blocked
+## 📍 Current Project Status
+- **Active Sprint**: [e.g., Sprint 1: Flight Discovery]
+- **Current Blocker**: [None / Waiting for API Keys]
+- **Last Sync**: 2025-12-18
 
 ---
 
-## 🛠️ Active Task Breakdown
-*The Planner updates this section after every successful 'Plan Mode' session.*
+## 🏗️ Feature Pipeline & Design Gates
+*This table is the single source of truth for the Orchestrator.*
 
-### Feature: [Active Feature Name]
-1.  **[Strategy]**: Define User Journey and "Happy Path". (Owner: **Planner**)
-2.  **[Design]**: Provide Tailwind specs and state mockups. (Owner: **Architect**)
-3.  **[Build]**: Implement logic and UI components. (Owner: **Implementer**)
-4.  **[Visual QA]**: Perform Playwright Audit & Accessibility Check. (Owner: **Architect**)
-5.  **[Final Review]**: Technical audit and Design Gate verification. (Owner: **Reviewer**)
+| ID | Feature Name | PRD | Data (API) | Design Handoff | Build | Visual QA | Status |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| 0001 | Flight Search Engine | ✅ | ✅ | 🟢 PASS | 🏗️ | ⏳ | In Progress |
+| 0002 | User Profile / Favs | ✅ | ⏳ | 🔴 BLOCKED | 🛑 | 🛑 | Discovery |
+| 0003 | Price Alerts | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | Backlog |
 
----
-
-## 📝 Design Standards & Decisions
-*This section records persistent product decisions to ensure consistency.*
-
-* **Color Palette**: Primary Travel Blue (`#1E40AF`), Success Green (`#15803D`).
-* **Loading Strategy**: Always use Skeleton Screens for API fetches exceeding 800ms.
-* **Mobile Priority**: All layouts must be verified at `375px` width before desktop approval.
+**Legend**:
+- ⏳ Pending / Not Started
+- 🏗️ In Implementation
+- 🔴 Blocked (Design/Data needs attention)
+- 🟢 Design Approved / Handoff Created
+- ✅ Complete & Verified
 
 ---
 
-## 📜 Log of Changes
-*Short, timestamped updates from agents.*
+## 🔗 Knowledge Map
+- **Visual Bible**: `[.gemini/design-inspo.md](../design-inspo.md)`
+- **Components**: `[.gemini/ui-library.md](../ui-library.md)`
+- **API Specs**: `[.gemini/tasks/api/]`
+- **Active Task List**: `[.gemini/tasks/tasklists/]`
 
-* **2025-12-18 (Planner)**: Created implementation plan for the Results Grid.
-* **2025-12-18 (Architect)**: Uploaded UI specs for Flight Cards to `.gemini/agents/assets/`.
-* **2025-12-18 (Orchestrator)**: Detected stale task list. Invoking Planner to update tasks for "Results Grid UI".
+---
+
+## 🛠️ Infrastructure Notes
+- **Primary Stack**: [e.g., Next.js, Tailwind CSS, Playwright]
+- **API Status**: [e.g., Amadeus Sandbox Active]
+- **Mobile Target**: iPhone 13/14/15 Pro (375px width)
+
+---
+
+## 📓 Scratchpad / Active Session Notes
+*Agents should log high-level discoveries or blockers here.*
+- **2025-12-18**: API-Expert found that the Amadeus API doesn't provide airline logos. Design-Architect needs to map codes to a local SVG library.
 ---
 
 

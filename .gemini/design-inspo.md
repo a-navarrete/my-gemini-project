@@ -19,7 +19,8 @@
 | **Airbnb** | Search & Filters | Excellent use of white space and intuitive category icons for easy navigation. |
 | **Linear.app** | Professional UI | High-density information that remains readable, fast, and keyboard-accessible. |
 | **Kayak** | Comparison Logic | Clear hierarchy of "Cheapest" vs "Fastest" vs "Best" flight options. |
-
+| **Claude** | Chat experience | Intuitive chat experience that feels like a companion. |
+| **Tripsy** | Itinerary logic | Ability to build itineraries for trips. |
 ---
 
 ## 🛠️ Design System Tokens

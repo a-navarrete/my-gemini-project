@@ -1,66 +1,58 @@
-# Rule: Generating a Product-Driven Task List from a PRD
+# Workflow: Generate Product-Driven Task List
 
 ## 🎯 Goal
-To guide the **Planner** in creating a detailed, phased task list that ensures the **Implementer** follows the design specs and clears the **Design Gate** before completion.
+To transform a PRD into a phased, actionable task list that enforces the **Design Gate** and utilizes the **Handoff Template**. This ensures the Implementer cannot deviate from the Design Architect's specifications.
 
-## 📁 Output
-- **Location**: `/tasks/`
-- **Filename**: `tasks-[prd-file-name].md`
+## 📝 Pre-Requisites
+1.  **PRD**: A finalized `prd-[nnnn].md` must exist in `/tasks/prd/`.
+2.  **Handoff**: The Design Architect must have drafted a `handoff-[nnnn].md` in `/tasks/handoffs/`.
+3.  **UI Library**: The `.gemini/ui-library.md` must be referenced for all component standards.
 
-## 🔄 Phased Process
+---
 
-### Phase 1: Parent Task Generation (The PDLC Framework)
-Analyze the PRD and codebase. You must generate 4-6 high-level Parent Tasks that follow this mandatory sequence:
-1.  **[Design Sync]**: Preparation of UI components and Tailwind specs.
-2.  **[Core Logic]**: Backend/API/State management implementation.
-3.  **[UI/UX Build]**: Frontend implementation based on Architect's specs.
-4.  **[Visual QA & Audit]**: Verification of the UI using Playwright.
-5.  **[Final Review]**: Code audit and Design Gate sign-off.
+## 🔄 The Generation Process
 
-**Wait for Confirmation**: Present these parent tasks and wait for the user to respond with "**Go**" before generating sub-tasks.
+### Phase 1: High-Level Phasing (Parent Tasks)
+The Planner must generate 4-6 "Parent Tasks" that follow this mandatory lifecycle:
+1.  **[Design Sync]**: UI preparation, Handoff review, and Component mapping.
+2.  **[Core Logic]**: Data fetching, API integration, and State management.
+3.  **[UI Build]**: Frontend implementation using `ui-library.md`.
+4.  **[Visual QA]**: Playwright audit and Design Gate sign-off.
+5.  **[Final Review]**: Code audit and Merge preparation.
 
-### Phase 2: Detailed Sub-Task Breakdown
-Once confirmed, break down each parent task. You **must** include these specific sub-tasks:
+**STOP**: Present these Parent Tasks to the user and wait for a "**Go**" before breaking them down into sub-tasks.
 
-* **In [Design Sync]**: 
-    - [ ] Create/Update local design tokens or Tailwind config if necessary.
-    - [ ] Define "Skeleton Loader" components for the Loading State.
-* **In [UI/UX Build]**:
-    - [ ] Implement Mobile-First responsive layouts (375px).
-    - [ ] Apply "Travel Intelligence" (e.g., price transparency, clear CTAs).
-* **In [Visual QA & Audit]**:
-    - [ ] Run `playwright-mcp-server` to audit the Happy Path.
-    - [ ] Capture Desktop and Mobile screenshots for the Design Architect.
-    - [ ] Run Accessibility audit (`accessibility.snapshot()`).
+### Phase 2: Detailed Sub-Task Rules
+When breaking down parent tasks, you **MUST** include these specific references and instructions:
 
-## 📋 Output Format
+#### **1. Linking the Handoff Specifications**
+The very first sub-task under **[UI Build]** MUST be:
+- [ ] Read and implement styles defined in `.gemini/tasks/handoffs/handoff-[feature-name].md`.
 
+#### **2. Enforcing the UI Library**
+Every frontend/UI sub-task must include a reference to the global standards:
+- [ ] Apply Tailwind classes exclusively from `.gemini/ui-library.md`.
+
+#### **3. Mandatory State Handling**
+Sub-tasks must explicitly address the four UI states defined in the PRD:
+- [ ] Implement **Skeleton Loader** (Loading State) per PRD/Handoff specs.
+- [ ] Implement **Empty State** (No Results) per PRD/Handoff specs.
+- [ ] Implement **Error State** (API Fail) per PRD/Handoff specs.
+
+#### **4. The Visual QA Trigger**
+The final sub-task under **[Visual QA]** MUST be:
+- [ ] Summon **Design Architect** to run Playwright Audit against `handoff-[feature].md`.
+
+---
+
+## 📁 Output Format
+The resulting file must be saved as: `.gemini/tasks/tasklists/tasks-[prd-filename].md`.
+
+### Required Header Structure:
+Every task list file must begin with this section:
 ```markdown
 ## 🔗 Relevant Files
-- `path/to/file.tsx` - [Reason]
-- `path/to/file.test.tsx` - [Tests]
-
-### 💡 Implementation Notes
-- Ensure the **Design Architect** provides the hex codes and spacing scales before starting Task 3.0.
-- All travel data displays must handle "Price + Taxes" transparency.
-
-## 🏁 Task List
-- [ ] 1.0 [Design Sync] - Product Strategy & UI Specs
-  - [ ] 1.1 Review PRD with Design Architect for "Happy Path" alignment.
-  - [ ] 1.2 Identify reusable components from the existing design system.
-- [ ] 2.0 [Logic] - API Integration & Data Handling
-- [ ] 3.0 [UI/UX] - Interface Implementation (Mobile-First)
-- [ ] 4.0 [Visual QA] - Playwright Audit & Gate Check
-  - [ ] 4.1 Capturing Visual Evidence for Architect Review.
-  - [ ] 4.2 Verifying Loading and Error states.
-- [ ] 5.0 [Review] - Final Code & Product Sign-off
-
- ## 🎯 Target Audience
-The reader is a Junior Implementer Agent. The list should be a recipe: if they follow every checkmark, the Reviewer Agent should find 0 errors.
-
-## 🚦 Final Instructions
-1. Do not skip the "Wait for Confirmation" step.
-
-2. Ensure every task list has a "Visual QA" phase.
-
-3. Reference the PRD states (Loading, Empty, Error) in the sub-tasks.
+- `tasks/prd/[filename].md` - Source Requirements
+- `tasks/handoffs/handoff-[filename].md` - Design Specifications
+- `ui-library.md` - Component Standards
+- `design-inspo.md` - Visual Guidelines

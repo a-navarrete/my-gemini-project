@@ -1,171 +1,73 @@
-import { spawn } from 'child_process';
-import path from 'path';
-
-const DEFAULT_TIMEOUT_MS = parseInt(process.env.CHATBOT_AGENT_TIMEOUT_MS || '120000', 10);
-const DEFAULT_PYTHON_MODULE = process.env.CHATBOT_PYTHON_MODULE || 'api.crewai_agents.chatbot_crew';
-const DEFAULT_PYTHON_BIN =
-  process.env.CHATBOT_PYTHON_BIN || path.resolve(process.cwd(), 'venv_crewai_ssl/bin/python3');
-const DEFAULT_FALLBACK_STRATEGY = String(process.env.CHATBOT_AGENT_FALLBACK || 'mock').toLowerCase();
+import nlpAgent from './nlpAgent.js';
+import flightAgent from './flightAgent.js';
+import hotelAgent from './hotelAgent.js';
+import packagingAgent from './packagingAgent.js';
 
 class TravelAgent {
-  constructor(options = {}) {
-    this.pythonExecutable = options.pythonExecutable || DEFAULT_PYTHON_BIN;
-    this.pythonModule = options.pythonModule || DEFAULT_PYTHON_MODULE;
-    this.timeoutMs = Number.isFinite(options.timeoutMs) ? options.timeoutMs : DEFAULT_TIMEOUT_MS;
-    this.cwd = options.cwd || process.cwd();
-    this.env = options.env || {};
-    const fallbackStrategy =
-      options.fallbackStrategy ?? process.env.CHATBOT_AGENT_FALLBACK ?? DEFAULT_FALLBACK_STRATEGY;
-    this.fallbackStrategy = String(fallbackStrategy || 'mock').toLowerCase();
-  }
-
-  isFallbackToMockEnabled() {
-    return this.fallbackStrategy === 'mock';
-  }
-
   normalizePayload(payload) {
     if (typeof payload === 'string') {
       return { message: payload, history: [] };
     }
-
     return {
       message: payload?.message || '',
       history: Array.isArray(payload?.history) ? payload.history : [],
     };
   }
 
-  shouldMock() {
-    return process.env.CHATBOT_AGENT_MODE === 'mock';
-  }
-
-  buildMockResponse({ message }) {
-    const trimmed = (message || '').trim();
-    const friendlyIntro = 'Sure, let me help with that!';
-    if (!trimmed) {
-      return { reply: `${friendlyIntro} How can I assist with your travel plans today?` };
-    }
-    return {
-      reply: `${friendlyIntro} I have logged your request: "${trimmed}". Let me gather the best travel options for you.`,
-    };
-  }
-
-  parsePythonResponse(rawOutput = '') {
-    const trimmed = rawOutput.toString().trim();
-    if (!trimmed) {
-      return { reply: '' };
-    }
-
-    try {
-      const parsed = JSON.parse(trimmed);
-      if (typeof parsed === 'string') {
-        return { reply: parsed };
-      }
-      if (!parsed.reply && parsed.text) {
-        return { ...parsed, reply: parsed.text };
-      }
-      return parsed;
-    } catch (_error) {
-      return { reply: trimmed };
-    }
-  }
-
-  spawnPythonProcess(payload) {
-    return new Promise((resolve, reject) => {
-      const pythonProcess = spawn(this.pythonExecutable, ['-u', '-m', this.pythonModule], {
-        cwd: this.cwd,
-        env: {
-          ...process.env,
-          ...this.env,
-        },
-      });
-
-      let stdout = '';
-      let stderr = '';
-      let settled = false;
-      let timeoutId = null;
-
-      const cleanup = () => {
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
-      };
-
-      const resolveOnce = (value) => {
-        if (settled) {
-          return;
-        }
-        settled = true;
-        cleanup();
-        resolve(value);
-      };
-
-      const rejectOnce = (error) => {
-        if (settled) {
-          return;
-        }
-        settled = true;
-        cleanup();
-        reject(error);
-      };
-
-      pythonProcess.stdout.on('data', (data) => {
-        stdout += data.toString();
-      });
-
-      pythonProcess.stderr.on('data', (data) => {
-        stderr += data.toString();
-      });
-
-      pythonProcess.on('error', (error) => {
-        rejectOnce({ error: 'Unable to start chatbot agent.', details: error.message });
-      });
-
-      pythonProcess.on('close', (code) => {
-        if (code !== 0) {
-          rejectOnce({
-            error: 'Failed to execute chatbot crew.',
-            details: stderr || `Python process exited with code ${code}`,
-          });
-          return;
-        }
-        resolveOnce(this.parsePythonResponse(stdout));
-      });
-
-      if (this.timeoutMs > 0) {
-        timeoutId = setTimeout(() => {
-          pythonProcess.kill('SIGTERM');
-          rejectOnce({
-            error: 'Chatbot agent timed out.',
-            details: `Process exceeded ${this.timeoutMs}ms timeout.`,
-          });
-        }, this.timeoutMs);
-      }
-
-      try {
-        pythonProcess.stdin.write(JSON.stringify(payload));
-        pythonProcess.stdin.end();
-      } catch (error) {
-        rejectOnce({ error: 'Failed to send payload to chatbot agent.', details: error.message });
-      }
-    });
-  }
-
   async execute(payload) {
     const normalizedPayload = this.normalizePayload(payload);
+    const { message } = normalizedPayload;
 
-    if (this.shouldMock()) {
-      return this.buildMockResponse(normalizedPayload);
-    }
+    // 1. Understand the user's intent
+    const nlpResult = nlpAgent.execute(message);
+    const { intent, domains, destination } = nlpResult;
 
-    try {
-      return await this.spawnPythonProcess(normalizedPayload);
-    } catch (error) {
-      if (this.isFallbackToMockEnabled()) {
-        console.warn('Chatbot agent failed; using mock response fallback.', error);
-        return this.buildMockResponse(normalizedPayload);
+    let agentResponse = {
+      reply: "I'm sorry, I'm not sure how to help with that. I can search for flights, hotels, or travel packages.",
+    };
+
+    // 2. Orchestrate downstream agents based on intent
+    if (intent === 'FLIGHT_SEARCH' || intent === 'HOTEL_SEARCH' || intent === 'PACKAGE_TRIP') {
+      if (!destination.code && !destination.city) {
+        return { reply: "I can help with that, but I'll need a destination. Where are you thinking of going?" };
       }
-      throw error;
+
+      const destinationIdentifier = destination.code || destination.city;
+      const promises = [];
+
+      if (domains.includes('flight')) {
+        promises.push(flightAgent.execute(destinationIdentifier));
+      }
+      if (domains.includes('hotel')) {
+        promises.push(hotelAgent.execute(destinationIdentifier));
+      }
+
+      // 3. Gather results from all agents
+      const results = await Promise.all(promises);
+      const flightResults = domains.includes('flight') ? results[domains.indexOf('flight')] : [];
+      const hotelResults = domains.includes('hotel') ? results[domains.indexOf('hotel')] : [];
+
+      // 4. Create packages if necessary
+      if (intent === 'PACKAGE_TRIP') {
+        const packages = packagingAgent.execute(flightResults, hotelResults);
+        agentResponse = {
+          ...nlpResult,
+          packages,
+          reply: packages.length > 0
+            ? `I've found ${packages.length} packages for your trip to ${destination.city || destination.code}.`
+            : `I couldn't find any packages for that trip. Would you like to search for flights and hotels separately?`,
+        };
+      } else {
+         agentResponse = {
+          ...nlpResult,
+          flights: flightResults,
+          hotels: hotelResults,
+          reply: `I've found some options for your trip to ${destination.city || destination.code}.`,
+        };
+      }
     }
+    
+    return agentResponse;
   }
 }
 
